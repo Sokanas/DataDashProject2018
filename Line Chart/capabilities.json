@@ -1,0 +1,188 @@
+{
+"dataRoles": [
+    {
+        "displayName": "Categories",
+        "name": "category",
+        "kind": "Grouping"
+    },
+    {
+        "displayName": "Measures",
+        "name": "measure",
+        "kind": "Measure"
+    },
+    {
+        "displayName": "Series",
+        "name": "series",
+        "kind": "GroupingOrMeasure"
+    }
+],
+"dataViewMappings": [
+    {
+        "categorical": {
+            "categories": {
+                "for": {
+                    "in": "category"
+                }
+            },
+            "values": {
+                "group": {
+                    "by": "series",
+                    "select": [{
+                            "for": {
+                                "in": "measure"
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    }
+],
+  "objects": {
+    "lineoptions": {
+      "displayName": "Line",
+      "displayNameKey": "Visual_Line",
+      "properties": {
+        "fill": {
+          "displayName": "Fill",
+          "displayNameKey": "Visual_Fill",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "lineThickness": {
+          "displayName": "Thickness",
+          "displayNameKey": "Visual_Thickness",
+          "type": {
+            "numeric": true
+          }
+        }
+      }
+    },
+    "dotoptions": {
+      "displayName": "Dot",
+      "displayNameKey": "Visual_Dot",
+      "properties": {
+        "percentile": {
+          "displayName": "Opacity",
+          "displayNameKey": "Visual_Opacity",
+         "type": {
+            "numeric": true
+          }
+        },
+        "color": {
+          "displayName": "Fill",
+          "displayNameKey": "Visual_Fill",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "dotSizeMin": {
+          "displayName": "Min size",
+          "displayNameKey": "Visual_MinSize",
+          "type": {
+            "numeric": true
+          }
+        },
+        "dotSizeMax": {
+          "displayName": "Max size",
+          "displayNameKey": "Visual_MaxSize",
+          "type": {
+            "numeric": true
+          }
+        }
+      }
+    },
+    "xAxis": {
+      "displayName": "X-Axis",
+      "displayNameKey": "Visual_XAxis",
+      "properties": {
+        "show": {
+          "displayName": "Show",
+          "displayNameKey": "Visual_Show",
+          "type": {
+            "bool": true
+          }
+        },
+        "color": {
+          "displayName": "Color",
+          "displayNameKey": "Visual_Color",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "textSize": {
+          "displayName": "Text Size",
+          "displayNameKey": "Visual_TextSize",
+          "type": {
+              "numeric": true
+          }
+        }
+      }
+    },
+    "yAxis": {
+      "displayName": "Y-Axis",
+      "displayNameKey": "Visual_YAxis",
+      "properties": {
+        "show": {
+          "displayName": "Show",
+          "displayNameKey": "Visual_Show",
+          "type": {
+            "bool": true
+          }
+        },
+        "color": {
+          "displayName": "Color",
+          "displayNameKey": "Visual_Color",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "textSize": {
+          "displayName": "Text Size",
+          "displayNameKey": "Visual_TextSize",
+          "type": {
+              "numeric": true
+          }
+        },
+        "isDuplicated": {
+          "displayName": "Duplicated",
+          "displayNameKey": "Visual_Duplicated",
+          "type": {
+            "bool": true
+          }
+        }
+      }
+    },
+    "counteroptions": {
+      "displayName": "Counter",
+      "displayNameKey": "Visual_Counter",
+      "properties": {
+        "counterTitle": {
+          "displayName": "Title",
+          "displayNameKey": "Visual_Title",
+          "type": {
+            "text": true
+          }
+        }
+      }
+    }
+  },
+    "supportsHighlight": true
+}
