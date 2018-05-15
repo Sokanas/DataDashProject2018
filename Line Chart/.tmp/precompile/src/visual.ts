@@ -72,7 +72,6 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
         private static Legends: ClassAndSelector = createClassAndSelector("legends");
         private static Legend: ClassAndSelector = createClassAndSelector("legend");
         private static Line: ClassAndSelector = createClassAndSelector("line");
-
         private static LegendSize: number = 50;
         private static AxisSize: number = 30;
 
@@ -84,11 +83,11 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
             lineThickness: {
                 min: 0,
                 max: 50,
-            },
+            }/*,
             animationDuration: {
                 min: 0,
                 max: 1000,
-            }
+            }*/
         };
 
         private root: d3.Selection<any>;
@@ -108,6 +107,16 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
         private behavior: IInteractiveBehavior;
         private hostService: IVisualHost;
         private localizationManager: ILocalizationManager;
+
+        /**
+         *  ENABLE OF DISABLE DEBG OUTPUT (TEXT) FROM BELOW
+         * 
+         * 
+         * 
+        */
+
+        private static debugMode: boolean = false;
+        private static target: HTMLElement;
 
         public data: LineChartViewModel;
 
@@ -176,15 +185,35 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
                 .classed(LineChart.Line.className, true);
 
             this.colors = options.host.colorPalette;
+
+            LineChart.target = options.element;
         }
 
         public update(options: VisualUpdateOptions) {
+            if(LineChart.debugMode == true){
+                LineChart.target.innerHTML = "";
+            }
             if (!options || !options.dataViews || !options.dataViews[0]) {
+                    if(LineChart.debugMode == true){
+                    LineChart.target.innerHTML += "<p>Update - No data selected or invalid options</p>";
+                    if(!options)
+                        LineChart.target.innerHTML += "<br/><p>Update - invalid options</p>";
+                    else
+                        LineChart.target.innerHTML += "<br/><p>NO data selected or bad data selected</p>";
+                }
                 return;
             }
             this.layout.viewport = options.viewport;
             let data: LineChartViewModel = LineChart.converter(options.dataViews[0], this.hostService, this.localizationManager);
             if (!data || _.isEmpty(data.dotPoints)) {
+                if(LineChart.debugMode == true){
+                    LineChart.target.innerHTML += "<p>No selected data points</p>";
+                    if(!data){
+                        LineChart.target.innerHTML += "The LineChartViewModel is faulty";
+                    }else{
+                        LineChart.target.innerHTML += "Data Collection is of size 0 [" + _.isEmpty(data.dotPoints) + "]";
+                    }
+                }
                 this.clear();
                 return;
             }
@@ -196,7 +225,12 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
             }
 
             this.resize();
+            
             this.calculateAxes();
+            
+            if(LineChart.debugMode == true){
+                LineChart.target.innerHTML += "update->draw";
+            }
             this.draw();
         }
 
@@ -211,18 +245,21 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
         }
 
         public clear() {
-            if (this.settings && this.settings.misc) {
+        /*    if (this.settings && this.settings.misc) {
                 this.settings.misc.isAnimated = false;
-            }
+            }*/
 
             this.axes.selectAll(LineChart.Axis.selectorName).selectAll("*").remove();
             this.main.selectAll(LineChart.Legends.selectorName).selectAll("*").remove();
             this.main.selectAll(LineChart.Line.selectorName).selectAll("*").remove();
             this.main.selectAll(LineChart.Legend.selectorName).selectAll("*").remove();
             this.line.selectAll(LineChart.textSelector).remove();
+            if(LineChart.debugMode == true){
+                LineChart.target.innerHTML += "<p>clear() finished</p>";
+            }
         }
 
-        public setIsStopped(isStopped: Boolean): void {
+        /*public setIsStopped(isStopped: Boolean): void {
             let objects: VisualObjectInstancesToPersist = {
                 merge: [
                     <VisualObjectInstance>{
@@ -236,7 +273,7 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
             };
 
             this.hostService.persistProperties(objects);
-        }
+        }*/
 
         public enumerateObjectInstances(options: EnumerateVisualObjectInstancesOptions): VisualObjectInstanceEnumeration {
             return LineChartSettings.enumerateObjectInstances(
@@ -261,6 +298,9 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
         private static dateMaxCutter: number = .05;
         private static makeSomeSpaceForCounter: number = .10;
         private static converter(dataView: DataView, visualHost: IVisualHost, localizationManager: ILocalizationManager): LineChartViewModel {
+            if(LineChart.debugMode == true){
+                LineChart.target.innerHTML += "<p<b>LineChar.Convertor(...)</b></p>";
+            }
             let categorical: LineChartColumns<DataViewCategoryColumn & DataViewValueColumn[]>
                 = LineChartColumns.getCategoricalColumns(dataView);
 
@@ -272,6 +312,9 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
                 || !categorical.Values[0]
                 || !categorical.Values[0].source
                 || _.isEmpty(categorical.Values[0].values)) {
+                    if(LineChart.debugMode == true){
+                        LineChart.target.innerHTML += "<p>The data convertor indicates that: There is no categorical column</p>";
+                    } 
                 return null;
             }
 
@@ -391,7 +434,7 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
                 max: defaultRange.dotSize.max
             });
             settings.lineoptions.lineThickness = this.validateDataValue(settings.lineoptions.lineThickness, defaultRange.lineThickness);
-            settings.misc.duration = this.validateDataValue(settings.misc.duration, defaultRange.animationDuration);
+            //settings.misc.duration = this.validateDataValue(settings.misc.duration, defaultRange.animationDuration);
 
             return settings;
         }
@@ -400,6 +443,9 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
         private static xLabelMaxWidth: number = 160;
         private static xLabelTickSize: number = 3.2;
         private calculateAxes() {
+            if(LineChart.debugMode == true){
+                LineChart.target.innerHTML += "<p>calculating axes</p>";
+            }
             let effectiveWidth: number = Math.max(0, this.layout.viewportIn.width - LineChart.LegendSize - LineChart.AxisSize);
             let effectiveHeight: number = Math.max(0, this.layout.viewportIn.height - LineChart.LegendSize);
 
@@ -480,6 +526,9 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
         }
 
         private resize(): void {
+            if(LineChart.debugMode == true){
+                LineChart.target.innerHTML += "<p>resizing</p>";
+            }
             this.root.attr({
                 width: this.layout.viewport.width,
                 height: this.layout.viewport.height
@@ -496,9 +545,12 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
         private static dotPointsText: string = "g.path, g.dot-points";
         private static dotPathText: string = "g.path";
         private draw(): void {
-            this.stopAnimation();
+            if(LineChart.debugMode == true){
+                LineChart.target.innerHTML += "<p>draw start</p>";
+            }
+        //    this.stopAnimation();
             this.renderLegends();
-            this.drawPlaybackButtons();
+        //    this.drawPlaybackButtons();
 
             if (this.settings.xAxis.show === true) {
                 this.axisX.call(this.xAxisProperties.axis);
@@ -524,12 +576,12 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
                 this.xAxisProperties.xLabelMaxWidth,
                 TextMeasurementService.svgEllipsis);
 
-            if (this.settings.misc.isAnimated && this.settings.misc.isStopped) {
+            /*if (this.settings.misc.isAnimated && this.settings.misc.isStopped) {
                 this.main.selectAll(LineChart.Line.selectorName).selectAll(LineChart.dotPointsText).remove();
                 this.line.selectAll(LineChart.textSelector).remove();
 
                 return;
-            }
+            }*/
 
             this.applyAxisSettings();
             let linePathSelection: d3.selection.Update<LineDotPoint[]> = this.line
@@ -537,10 +589,16 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
                 .data([this.data.dotPoints]);
             linePathSelection
                 .exit().remove();
-            this.drawLine(linePathSelection);
-            this.drawClipPath(linePathSelection);
 
-            this.drawDots();
+        
+            if(LineChart.debugMode == true){
+                LineChart.target.innerHTML += "<p>draw line</p>";
+            }
+
+            this.drawLine(linePathSelection);
+            //this.drawClipPath(linePathSelection);
+
+            //this.drawDots();
         }
 
         public applyAxisSettings(): void {
@@ -583,7 +641,7 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
         private static playBtnGroupRectWidth: string = "2";
         private static playBtnGroupRectHeight: string = "12";
         private static StopButton: ClassAndSelector = createClassAndSelector("stop");
-        private drawPlaybackButtons() {
+        /*private drawPlaybackButtons() {
             let playBtn: d3.selection.Update<string> = this.line.selectAll(LineChart.gLineChartPayBtn).data([""]);
             let playBtnGroup: d3.Selection<string> = playBtn.enter()
                 .append("g")
@@ -622,13 +680,16 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
             playBtn.selectAll(LineChart.StopButton.selectorName).attr("opacity", () => this.settings.misc.isAnimated && !this.settings.misc.isStopped ? 1 : 0);
 
             playBtn.exit().remove();
-        }
+        }*/
 
         private static pathClassName: string = "path";
         private static pathPlotClassName: string = "path.plot";
         private static plotClassName: string = "plot";
         private static lineClip: string = "lineClip";
         private drawLine(linePathSelection: d3.selection.Update<LineDotPoint[]>) {
+            if(LineChart.debugMode == true){
+                LineChart.target.innerHTML += "<p>drawline() start</p>";
+            }
             linePathSelection.enter().append("g").classed(LineChart.pathClassName, true);
 
             let pathPlot: d3.selection.Update<LineDotPoint[]> = linePathSelection.selectAll(LineChart.pathPlotClassName).data(d => [d]);
@@ -650,6 +711,10 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
                 .attr('stroke-width', this.settings.lineoptions.lineThickness)
                 .attr('d', drawLine)
                 .attr("clip-path", "url(" + location.href + '#' + LineChart.lineClip + ")");
+                
+                if(LineChart.debugMode == true){
+                    LineChart.target.innerHTML += "<p>drawline() complete</p>";
+                }
         }
 
         private static zeroX: number = 0;
@@ -667,7 +732,7 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
             let line_left: any = this.xAxisProperties.scale(_.first(this.data.dotPoints).dateValue.value);
             let line_right: any = this.xAxisProperties.scale(_.last(this.data.dotPoints).dateValue.value);
 
-            if (this.settings.misc.isAnimated) {
+            /*if (this.settings.misc.isAnimated) {
                 clipPath
                     .selectAll("rect")
                     .attr('x', line_left)
@@ -680,7 +745,8 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
                     .attr('width', line_right - line_left);
             } else {
                 linePathSelection.selectAll("clipPath").remove();
-            }
+            }*/
+            linePathSelection.selectAll("clipPath").remove();
         }
 
         private static pointTime: number = 300;
@@ -689,7 +755,10 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
         private static pointScaleValue: number = 0.005;
         private static pointTransformScaleValue: number = 3.4;
         private drawDots() {
-            let point_time: number = this.settings.misc.isAnimated && !this.settings.misc.isStopped ? LineChart.pointTime : 0;
+            if(LineChart.debugMode == true){
+                LineChart.target.innerHTML += "<p>draw dots()</p>";
+            }
+        //    let point_time: number = this.settings.misc.isAnimated && !this.settings.misc.isStopped ? LineChart.pointTime : 0;
 
             let hasHighlights: boolean = this.data.hasHighlights;
             let hasSelection: boolean = this.interactivityService && this.interactivityService.hasSelection();
@@ -719,7 +788,7 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
                 .attr('r', (d: LineDotPoint) =>
                     this.settings.dotoptions.dotSizeMin + d.dot * (this.settings.dotoptions.dotSizeMax - this.settings.dotoptions.dotSizeMin));
 
-            if (this.settings.misc.isAnimated) {
+            /*if (this.settings.misc.isAnimated) {
                 let maxTextLength: number = Math.min(350, this.xAxisProperties.scale.range()[1] - this.xAxisProperties.scale.range()[0] - 60);
                 let lineTextSelection: d3.Selection<any> = this.line.selectAll(LineChart.textSelector);
                 let lineText: d3.selection.Update<string> = lineTextSelection.data([""]);
@@ -773,20 +842,20 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
                             this.yAxisProperties.scale(dataPoint.sum),
                             1);
                     });
-            } else {
-                dotsSelection
-                    .interrupt()
-                    .attr('transform', (dataPoint: LineDotPoint) => {
-                        return SVGUtil.translateAndScale(
-                            this.xAxisProperties.scale(dataPoint.dateValue.value),
-                            this.yAxisProperties.scale(dataPoint.sum),
-                            1);
-                    });
+            } else {*/
+            dotsSelection
+                .interrupt()
+                .attr('transform', (dataPoint: LineDotPoint) => {
+                    return SVGUtil.translateAndScale(
+                        this.xAxisProperties.scale(dataPoint.dateValue.value),
+                        this.yAxisProperties.scale(dataPoint.sum),
+                        1);
+                });
 
-                this.line
-                    .selectAll(LineChart.textSelector)
-                    .remove();
-            }
+            this.line
+                .selectAll(LineChart.textSelector)
+                .remove();
+            //}
 
             for (let i: number = 0; i < dotsSelection[0].length; i++) {
                 this.addTooltip(dotsSelection[0][i] as Element);
@@ -810,7 +879,7 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
             }
         }
 
-        private get animationDuration(): number {
+        /*private get animationDuration(): number {
             if (this.settings && this.settings.misc) {
                 return this.settings.misc.duration;
             }
@@ -824,7 +893,7 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
                 .delay(0);
 
             d3.timer.flush();
-        }
+        }*/
 
         private static textSelector: string = "text.text";
         private static widthMargin: number = 85;
@@ -833,7 +902,7 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
             textSelector.text(d => text);
         }
 
-        private pointDelay(points: LineDotPoint[], num: number, animation_duration: number): number {
+        /*private pointDelay(points: LineDotPoint[], num: number, animation_duration: number): number {
             if (!points.length
                 || !points[num]
                 || num === 0
@@ -848,7 +917,7 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
                 max: number = points[points.length - 1].dateValue.value;
 
             return animation_duration * 1000 * (time - min) / (max - min);
-        }
+        }*/
 
         private static showClassName: string = 'show';
         private showDataPoint(data: LineDotPoint, index: number): void {

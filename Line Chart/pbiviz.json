@@ -1,7 +1,7 @@
 {
   "visual": {
-    "name": "lineBase",
-    "displayName": "LineBase",
+    "name": "LineChart",
+    "displayName": "LineChart",
     "guid": "lineBase7208B18920D946BCB1A3B34BF2CC8FA3",
     "visualClassName": "LineChart",
     "version": "0.0.1",

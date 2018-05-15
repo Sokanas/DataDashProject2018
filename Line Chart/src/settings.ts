@@ -32,7 +32,7 @@ module powerbi.extensibility.visual {
         public lineoptions: LineSettings = new LineSettings();
         public dotoptions: DotSettings = new DotSettings();
         public counteroptions: CounterSettings = new CounterSettings();
-        public misc: MiscSettings = new MiscSettings();
+    //    public misc: MiscSettings = new MiscSettings();
         public xAxis: AxisSettings = new AxisSettings();
         public yAxis: YAxisSettings = new YAxisSettings();
     }
@@ -64,11 +64,11 @@ module powerbi.extensibility.visual {
         public counterTitle: string = null;
     }
 
-    export class MiscSettings {
+    /*export class MiscSettings {
         public isAnimated: boolean = true;
         public isStopped: boolean = true;
         public duration: number = 20;
-    }
+    }*/
 
     export class CounterDateTime {
         public isCounterDateTime: boolean = true;

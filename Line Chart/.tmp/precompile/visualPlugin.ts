@@ -1,7 +1,7 @@
 module powerbi.visuals.plugins {
     export var lineBase7208B18920D946BCB1A3B34BF2CC8FA3 = {
         name: 'lineBase7208B18920D946BCB1A3B34BF2CC8FA3',
-        displayName: 'LineBase',
+        displayName: 'LineChart',
         class: 'LineChart',
         version: '0.0.1',
         apiVersion: '1.11.0',

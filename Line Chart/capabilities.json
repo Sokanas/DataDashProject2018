@@ -1,43 +1,78 @@
 {
-"dataRoles": [
+  "dataRoles": [
     {
-        "displayName": "Categories",
-        "name": "category",
-        "kind": "Grouping"
+      "name": "Date",
+      "kind": "Grouping",
+      "displayName": "Date",
+      "displayNameKey": "Visual_Date"
     },
     {
-        "displayName": "Measures",
-        "name": "measure",
-        "kind": "Measure"
+      "name": "Values",
+      "kind": "Measure",
+      "displayName": "Values",
+      "displayNameKey": "Visual_Values"
     },
     {
-        "displayName": "Series",
-        "name": "series",
-        "kind": "GroupingOrMeasure"
+      "name": "Counter",
+      "kind": "Measure",
+      "displayName": "Counter",
+      "displayNameKey": "Visual_Counter"
     }
 ],
 "dataViewMappings": [
     {
-        "categorical": {
-            "categories": {
-                "for": {
-                    "in": "category"
-                }
-            },
-            "values": {
-                "group": {
-                    "by": "series",
-                    "select": [{
-                            "for": {
-                                "in": "measure"
-                            }
-                        }
-                    ]
-                }
-            }
+      "conditions": [
+        {
+          "Date": {
+            "min": 0,
+            "max": 1
+          },
+          "Values": {
+            "min": 0,
+            "max": 1
+          },
+          "Counter": {
+            "min": 0,
+            "max": 1
+          },
+          "Labels": {
+            "min": 0,
+            "max": 1
+          }
         }
+      ],
+      "categorical": {
+        "categories": {
+          "select": [
+            {
+              "for": {
+                "in": "Date"
+              }
+            }
+          ],
+          "dataReductionAlgorithm": {
+            "top": {
+              "count": 10000
+            }
+          }
+        },
+        "values": {
+          "select": [
+            {
+              "bind": {
+                "to": "Values"
+              }
+            },
+             {
+              "bind": {
+                "to": "Counter"
+              }
+            }
+          ]
+        }
+      }
     }
-],
+  ],
   "objects": {
     "lineoptions": {
       "displayName": "Line",
@@ -184,5 +219,5 @@
       }
     }
   },
-    "supportsHighlight": true
+  "supportsHighlight": true
 }

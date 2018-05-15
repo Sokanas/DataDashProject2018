@@ -91,8 +91,9 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
     export interface LineChartDefaultSettingsRange {
         dotSize: MinMaxValue;
         lineThickness: MinMaxValue;
-        animationDuration: MinMaxValue;
+    
     }
+    //    animationDuration: MinMaxValue;
 }
 
 
