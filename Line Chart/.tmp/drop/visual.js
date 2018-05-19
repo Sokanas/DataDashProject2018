@@ -28768,6 +28768,7 @@ var powerbi;
                     function YAxisSettings() {
                         var _this = _super !== null && _super.apply(this, arguments) || this;
                         _this.isDuplicated = true;
+                        _this.dynamicScaling = false;
                         return _this;
                     }
                     return YAxisSettings;
@@ -28777,6 +28778,11 @@ var powerbi;
                     function LineSettings() {
                         this.fill = "rgb(102, 212, 204)";
                         this.lineThickness = 3;
+                        this.lineThreshold = false;
+                        this.lineMinorThresholdColor = "black";
+                        this.lineMajorThresholdColor = "black";
+                        this.lineMinorThreshold = -1;
+                        this.lineMajorThreshold = -1;
                     }
                     return LineSettings;
                 }());
@@ -28785,7 +28791,7 @@ var powerbi;
                     function DotSettings() {
                         this.color = "#005c55";
                         this.dotSizeMin = 4;
-                        this.dotSizeMax = 38;
+                        this.dotSizeMax = 10;
                         // Opacity
                         this.percentile = 100;
                     }
@@ -29465,7 +29471,7 @@ var powerbi;
                         this.xAxisProperties.formatter = this.data.dateColumnFormatter;
                         this.yAxisProperties = AxisHelper.createAxis({
                             pixelSpan: effectiveHeight,
-                            dataDomain: [this.data.yMinValue, this.data.sumOfValues],
+                            dataDomain: [this.data.yMinValue, this.data.yMaxValue],
                             metaDataColumn: this.data.valuesMetadataColumn,
                             formatString: null,
                             outerPadding: LineChart.outerPadding,
@@ -29476,7 +29482,7 @@ var powerbi;
                         });
                         this.yAxis2Properties = AxisHelper.createAxis({
                             pixelSpan: effectiveHeight,
-                            dataDomain: [this.data.yMinValue, this.data.sumOfValues],
+                            dataDomain: [this.data.yMinValue, this.data.yMaxValue],
                             metaDataColumn: this.data.valuesMetadataColumn,
                             formatString: null,
                             outerPadding: LineChart.outerPadding,
@@ -29600,7 +29606,7 @@ var powerbi;
                             return _this.xAxisProperties.scale(dataPoint.dateValue.value);
                         })
                             .y(function (dataPoint) {
-                            return _this.yAxisProperties.scale(dataPoint.sum);
+                            return _this.yAxisProperties.scale(dataPoint.value);
                         });
                         pathPlot
                             .attr('stroke', function () { return _this.settings.lineoptions.fill; })
@@ -29725,7 +29731,7 @@ var powerbi;
                         dotsSelection
                             .interrupt()
                             .attr('transform', function (dataPoint) {
-                            return SVGUtil.translateAndScale(_this.xAxisProperties.scale(dataPoint.dateValue.value), _this.yAxisProperties.scale(dataPoint.sum), 1);
+                            return SVGUtil.translateAndScale(_this.xAxisProperties.scale(dataPoint.dateValue.value), _this.yAxisProperties.scale(dataPoint.value), 1);
                         });
                         this.line
                             .selectAll(LineChart.textSelector)

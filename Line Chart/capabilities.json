@@ -95,6 +95,49 @@
           "type": {
             "numeric": true
           }
+        },
+        "lineMinorThreshold": {
+          "displayName": "Minor Threshold",
+          "displayNameKey": "Minor_Threshold",
+          "type": {
+            "numeric": true
+          }
+        },
+        "lineMajorThreshold": {
+          "displayName": "Major Threshold",
+          "displayNameKey": "Major_Threshold",
+          "type": {
+            "numeric": true
+          }
+        },
+        "lineMinorThresholdColor": {
+          "displayName": "Minor Th. Color",
+          "displayNameKey": "Visual_Color2",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "lineMajorThresholdColor": {
+          "displayName": "Major Th. Color",
+          "displayNameKey": "Visual_Color3",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "lineThreshold": {
+          "displayName": "Threshold Enabled",
+          "displayNameKey": "Threshold_Enables",
+          "type": {
+            "bool": true
+          }
         }
       }
     },
@@ -102,6 +145,13 @@
       "displayName": "Dot",
       "displayNameKey": "Visual_Dot",
       "properties": {
+        "show": {
+          "displayName": "Show",
+          "displayNameKey": "Visual_Show",
+          "type": {
+            "bool": true
+          }
+        },
         "percentile": {
           "displayName": "Opacity",
           "displayNameKey": "Visual_Opacity",
@@ -199,6 +249,13 @@
         "isDuplicated": {
           "displayName": "Duplicated",
           "displayNameKey": "Visual_Duplicated",
+          "type": {
+            "bool": true
+          }
+        },
+        "dynamicScaling": {
+          "displayName": "Scaled",
+          "displayNameKey": "Dynamic_Scaling",
           "type": {
             "bool": true
           }

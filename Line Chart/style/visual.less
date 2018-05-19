@@ -39,7 +39,7 @@
 .lineChart .axis line,
 .lineChart .legends line {
   fill: none;
-  stroke: black;
+  stroke: red;
   shape-rendering: crispEdges;
 }
 .lineChart .axis text,
@@ -49,13 +49,29 @@
 }
 .lineChart .legends text {
   font-size: 16px;
-  fill: #000;
+  fill: red;
   text-anchor: middle;
 }
 .lineChart .line {
   fill: none;
   stroke-width: 2px;
 }
+
+.lineChart .path{
+  fill: none;
+  stroke: #000;
+}
+
+.path{
+  fill: none;
+  stroke: #000;
+}
+
+path line {
+  fill: none;
+  stroke: #000;
+}
+
 .lineChart .point {
   stroke: white;
   stroke-opacity: .7;
@@ -81,11 +97,11 @@
   fill: white;
 }
 .lineChart__playBtn rect {
-  fill: black;
+  fill: white;
 }
 
 .lineChart__playBtn path {
-  fill: black;
+  fill: white;
 }
 
 .playBtnGroupPathTranslate {

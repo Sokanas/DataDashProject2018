@@ -45,17 +45,23 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
 
     export class YAxisSettings extends AxisSettings {
         public isDuplicated: boolean = true;
+        public dynamicScaling: boolean = false;
     }
 
     export class LineSettings {
         public fill: string = "rgb(102, 212, 204)";
         public lineThickness: number = 3;
+        public lineThreshold: boolean = false;
+        public lineMinorThresholdColor: string = "black";
+        public lineMajorThresholdColor: string = "black";
+        public lineMinorThreshold: number = -1;
+        public lineMajorThreshold: number = -1;
     }
 
     export class DotSettings {
         public color: string = "#005c55";
         public dotSizeMin: number = 4;
-        public dotSizeMax: number = 38;
+        public dotSizeMax: number = 10;
         // Opacity
         public percentile: number = 100;
     }

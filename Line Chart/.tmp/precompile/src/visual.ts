@@ -295,6 +295,7 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
             }
             return value;
         }
+
         private static dateMaxCutter: number = .05;
         private static makeSomeSpaceForCounter: number = .10;
         private static converter(dataView: DataView, visualHost: IVisualHost, localizationManager: ILocalizationManager): LineChartViewModel {
@@ -485,7 +486,7 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
 
             this.yAxisProperties = AxisHelper.createAxis({
                 pixelSpan: effectiveHeight,
-                dataDomain: [this.data.yMinValue, this.data.sumOfValues],
+                dataDomain: [this.data.yMinValue, this.data.yMaxValue],
                 metaDataColumn: this.data.valuesMetadataColumn,
                 formatString: null,
                 outerPadding: LineChart.outerPadding,
@@ -497,7 +498,7 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
 
             this.yAxis2Properties = AxisHelper.createAxis({
                 pixelSpan: effectiveHeight,
-                dataDomain: [this.data.yMinValue, this.data.sumOfValues],
+                dataDomain: [this.data.yMinValue, this.data.yMaxValue],
                 metaDataColumn: this.data.valuesMetadataColumn,
                 formatString: null,
                 outerPadding: LineChart.outerPadding,
@@ -703,7 +704,7 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
                     return this.xAxisProperties.scale(dataPoint.dateValue.value);
                 })
                 .y((dataPoint: LineDotPoint) => {
-                    return this.yAxisProperties.scale(dataPoint.sum);
+                    return this.yAxisProperties.scale(dataPoint.value);
                 });
 
             pathPlot
@@ -848,7 +849,7 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
                 .attr('transform', (dataPoint: LineDotPoint) => {
                     return SVGUtil.translateAndScale(
                         this.xAxisProperties.scale(dataPoint.dateValue.value),
-                        this.yAxisProperties.scale(dataPoint.sum),
+                        this.yAxisProperties.scale(dataPoint.value),
                         1);
                 });
 
