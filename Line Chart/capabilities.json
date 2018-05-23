@@ -96,34 +96,16 @@
             "numeric": true
           }
         },
-        "lineMinorThreshold": {
-          "displayName": "Minor Threshold",
-          "displayNameKey": "Minor_Threshold",
-          "type": {
-            "numeric": true
-          }
-        },
-        "lineMajorThreshold": {
-          "displayName": "Major Threshold",
+        "lineThresholdValue": {
+          "displayName": "Threshold",
           "displayNameKey": "Major_Threshold",
           "type": {
             "numeric": true
           }
         },
-        "lineMinorThresholdColor": {
-          "displayName": "Minor Th. Color",
-          "displayNameKey": "Visual_Color2",
-          "type": {
-            "fill": {
-              "solid": {
-                "color": true
-              }
-            }
-          }
-        },
-        "lineMajorThresholdColor": {
-          "displayName": "Major Th. Color",
-          "displayNameKey": "Visual_Color3",
+        "lineThresholdColor": {
+          "displayName": "Threshold Color",
+          "displayNameKey": "Visual_Color1",
           "type": {
             "fill": {
               "solid": {
@@ -258,6 +240,20 @@
           "displayNameKey": "Dynamic_Scaling",
           "type": {
             "bool": true
+          }
+        },
+        "yscalemaxin":{
+          "displayName": "max height",
+          "displayNameKey": "dynymax",
+          "type": {
+            "numeric": true
+          }
+        },
+        "yscaleminin":{
+          "displayName": "minimum height",
+          "displayNameKey": "dynymin",
+          "type": {
+            "numeric": true
           }
         }
       }
