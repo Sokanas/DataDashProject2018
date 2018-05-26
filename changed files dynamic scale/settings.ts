@@ -45,7 +45,9 @@ module powerbi.extensibility.visual {
 
     export class YAxisSettings extends AxisSettings {
         public isDuplicated: boolean = true;
-        public dynamicScaling: boolean = false;
+        public dynamicScaling: boolean = true;
+        public yscalemaxin: number = 10;
+        public yscaleminin: number = 0;
     }
 
     export class LineSettings {

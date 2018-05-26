@@ -259,6 +259,20 @@
           "type": {
             "bool": true
           }
+        },
+        "yscalemaxin":{
+          "displayName": "max height",
+          "displayNameKey": "dynymax",
+          "type": {
+            "numeric": true
+          }
+        },
+        "yscaleminin":{
+          "displayName": "minimum height",
+          "displayNameKey": "dynymin",
+          "type": {
+            "numeric": true
+          }
         }
       }
     },

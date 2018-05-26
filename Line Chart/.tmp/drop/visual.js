@@ -28768,9 +28768,7 @@ var powerbi;
                     function YAxisSettings() {
                         var _this = _super !== null && _super.apply(this, arguments) || this;
                         _this.isDuplicated = true;
-                        _this.dynamicScaling = true;
-                        _this.yscalemaxin = 10;
-                        _this.yscaleminin = 0;
+                        _this.dynamicScaling = false;
                         return _this;
                     }
                     return YAxisSettings;
@@ -28781,10 +28779,10 @@ var powerbi;
                         this.fill = "rgb(102, 212, 204)";
                         this.lineThickness = 3;
                         this.lineThreshold = false;
-                        //public lineMinorThresholdColor: string = "black";
-                        this.lineThresholdColor = "black";
-                        //public lineMinorThreshold: number = -1;
-                        this.lineThresholdValue = -1;
+                        this.lineMinorThresholdColor = "black";
+                        this.lineMajorThresholdColor = "black";
+                        this.lineMinorThreshold = -1;
+                        this.lineMajorThreshold = -1;
                     }
                     return LineSettings;
                 }());
@@ -29471,56 +29469,29 @@ var powerbi;
                         });
                         this.xAxisProperties.xLabelMaxWidth = Math.min(LineChart.xLabelMaxWidth, this.layout.viewportIn.width / LineChart.xLabelTickSize);
                         this.xAxisProperties.formatter = this.data.dateColumnFormatter;
-                        if (this.settings.yAxis.dynamicScaling == false) {
-                            this.yAxisProperties = AxisHelper.createAxis({
-                                pixelSpan: effectiveHeight,
-                                dataDomain: [this.settings.yAxis.yscaleminin, this.settings.yAxis.yscalemaxin],
-                                metaDataColumn: this.data.valuesMetadataColumn,
-                                formatString: null,
-                                outerPadding: LineChart.outerPadding,
-                                isCategoryAxis: false,
-                                isScalar: true,
-                                isVertical: true,
-                                useTickIntervalForDisplayUnits: true
-                            });
-                            this.yAxis2Properties = AxisHelper.createAxis({
-                                pixelSpan: effectiveHeight,
-                                dataDomain: [this.settings.yAxis.yscaleminin, this.settings.yAxis.yscalemaxin],
-                                metaDataColumn: this.data.valuesMetadataColumn,
-                                formatString: null,
-                                outerPadding: LineChart.outerPadding,
-                                isCategoryAxis: false,
-                                isScalar: true,
-                                isVertical: true,
-                                useTickIntervalForDisplayUnits: true
-                            });
-                            this.yAxis2Properties.axis.orient('right');
-                        }
-                        else if (this.settings.yAxis.dynamicScaling == true) {
-                            this.yAxisProperties = AxisHelper.createAxis({
-                                pixelSpan: effectiveHeight,
-                                dataDomain: [this.data.yMinValue, this.data.yMaxValue],
-                                metaDataColumn: this.data.valuesMetadataColumn,
-                                formatString: null,
-                                outerPadding: LineChart.outerPadding,
-                                isCategoryAxis: false,
-                                isScalar: true,
-                                isVertical: true,
-                                useTickIntervalForDisplayUnits: true
-                            });
-                            this.yAxis2Properties = AxisHelper.createAxis({
-                                pixelSpan: effectiveHeight,
-                                dataDomain: [this.data.yMinValue, this.data.yMaxValue],
-                                metaDataColumn: this.data.valuesMetadataColumn,
-                                formatString: null,
-                                outerPadding: LineChart.outerPadding,
-                                isCategoryAxis: false,
-                                isScalar: true,
-                                isVertical: true,
-                                useTickIntervalForDisplayUnits: true
-                            });
-                            this.yAxis2Properties.axis.orient('right');
-                        }
+                        this.yAxisProperties = AxisHelper.createAxis({
+                            pixelSpan: effectiveHeight,
+                            dataDomain: [this.data.yMinValue, this.data.yMaxValue],
+                            metaDataColumn: this.data.valuesMetadataColumn,
+                            formatString: null,
+                            outerPadding: LineChart.outerPadding,
+                            isCategoryAxis: false,
+                            isScalar: true,
+                            isVertical: true,
+                            useTickIntervalForDisplayUnits: true
+                        });
+                        this.yAxis2Properties = AxisHelper.createAxis({
+                            pixelSpan: effectiveHeight,
+                            dataDomain: [this.data.yMinValue, this.data.yMaxValue],
+                            metaDataColumn: this.data.valuesMetadataColumn,
+                            formatString: null,
+                            outerPadding: LineChart.outerPadding,
+                            isCategoryAxis: false,
+                            isScalar: true,
+                            isVertical: true,
+                            useTickIntervalForDisplayUnits: true
+                        });
+                        this.yAxis2Properties.axis.orient('right');
                     };
                     LineChart.prototype.generateAxisLabels = function () {
                         return [
@@ -29619,7 +29590,6 @@ var powerbi;
                             }
                         }
                     };
-                    //public static temp111: number = 0;
                     LineChart.prototype.drawLine = function (linePathSelection) {
                         var _this = this;
                         if (LineChart.debugMode == true) {
@@ -29631,6 +29601,7 @@ var powerbi;
                             .append('path')
                             .classed(LineChart.plotClassName, true);
                         // Draw the line
+<<<<<<< HEAD
                         if (this.settings.lineoptions.lineThreshold == false) {
                             pathPlot
                                 .append("linearGradient")
@@ -29649,27 +29620,14 @@ var powerbi;
                                 .attr("offset", function (d) { return d.offset; })
                                 .attr("stop-color", function (d) { return d.color; });
                         }
+=======
+>>>>>>> parent of 1e8f0c9b... Merged Dynamc Y and Started implementing colouring
                         var drawLine = d3.svg.line()
                             .x(function (dataPoint) {
                             return _this.xAxisProperties.scale(dataPoint.dateValue.value);
                         })
                             .y(function (dataPoint) {
-                            if (_this.settings.yAxis.dynamicScaling == true) {
-                                return _this.yAxisProperties.scale(dataPoint.value);
-                            }
-                            else {
-                                if ((dataPoint.value <= _this.settings.yAxis.yscalemaxin) && (dataPoint.value >= _this.settings.yAxis.yscaleminin)) {
-                                    return _this.yAxisProperties.scale(dataPoint.value);
-                                }
-                                else {
-                                    if (dataPoint.value > _this.settings.yAxis.yscalemaxin) {
-                                        return _this.yAxisProperties.scale(_this.settings.yAxis.yscalemaxin);
-                                    }
-                                    else {
-                                        return _this.yAxisProperties.scale(_this.settings.yAxis.yscaleminin);
-                                    }
-                                }
-                            }
+                            return _this.yAxisProperties.scale(dataPoint.value);
                         });
                         pathPlot
                             .attr('stroke', 'line-gradient')
@@ -29679,17 +29637,6 @@ var powerbi;
                         if (LineChart.debugMode == true) {
                             LineChart.target.innerHTML += "<p>drawline() complete</p>";
                         }
-                    };
-                    LineChart.prototype.overThreshold = function (d) {
-                        if (d.value <= this.settings.lineoptions.lineThresholdValue)
-                            return true;
-                        return false;
-                    };
-                    LineChart.prototype.underThreshold = function (d) {
-                        if (d.value >= this.settings.lineoptions.lineThresholdValue) {
-                            return true;
-                        }
-                        return false;
                     };
                     LineChart.prototype.drawClipPath = function (linePathSelection) {
                         var clipPath = linePathSelection.selectAll("clipPath").data(function (d) { return [d]; });

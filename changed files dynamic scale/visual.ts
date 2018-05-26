@@ -24,7 +24,7 @@
  *  THE SOFTWARE.
  */
 
-module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
+module powerbi.extensibility.visual {
     import ClassAndSelector = powerbi.extensibility.utils.svg.CssConstants.ClassAndSelector;
     import createClassAndSelector = powerbi.extensibility.utils.svg.CssConstants.createClassAndSelector;
     import DataViewObjectPropertyTypeDescriptor = powerbi.DataViewPropertyValue;
@@ -93,6 +93,7 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
         private root: d3.Selection<any>;
         private main: d3.Selection<any>;
         private axes: d3.Selection<any>;
+        private scale;
         private axisX: d3.Selection<any>;
         private axisY: d3.Selection<any>;
         private axisY2: d3.Selection<any>;
@@ -114,6 +115,8 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
          * 
          * 
         */
+        
+
 
         private static debugMode: boolean = false;
         private static target: HTMLElement;
@@ -483,9 +486,39 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
             this.xAxisProperties.xLabelMaxWidth = Math.min(LineChart.xLabelMaxWidth, this.layout.viewportIn.width / LineChart.xLabelTickSize);
 
             this.xAxisProperties.formatter = this.data.dateColumnFormatter;
+            
+            
+           if (this.settings.yAxis.dynamicScaling == false){ 
 
             this.yAxisProperties = AxisHelper.createAxis({
+                pixelSpan: effectiveHeight,   
+                dataDomain: [this.settings.yAxis.yscaleminin, this.settings.yAxis.yscalemaxin],
+                metaDataColumn: this.data.valuesMetadataColumn,
+                formatString: null,
+                outerPadding: LineChart.outerPadding,
+                isCategoryAxis: false,
+                isScalar: true,
+                isVertical: true,
+                useTickIntervalForDisplayUnits: true
+            });
+
+            this.yAxis2Properties = AxisHelper.createAxis({
                 pixelSpan: effectiveHeight,
+                dataDomain: [this.settings.yAxis.yscaleminin, this.settings.yAxis.yscalemaxin],
+                metaDataColumn: this.data.valuesMetadataColumn,
+                formatString: null,
+                outerPadding: LineChart.outerPadding,
+                isCategoryAxis: false,
+                isScalar: true,
+                isVertical: true,
+                useTickIntervalForDisplayUnits: true
+            });
+            this.yAxis2Properties.axis.orient('right');
+        } else if (this.settings.yAxis.dynamicScaling == true){
+        
+
+            this.yAxisProperties = AxisHelper.createAxis({
+                pixelSpan: effectiveHeight,   
                 dataDomain: [this.data.yMinValue, this.data.yMaxValue],
                 metaDataColumn: this.data.valuesMetadataColumn,
                 formatString: null,
@@ -506,9 +539,11 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
                 isScalar: true,
                 isVertical: true,
                 useTickIntervalForDisplayUnits: true
-            });
-            this.yAxis2Properties.axis.orient('right');
-        }
+        });
+        this.yAxis2Properties.axis.orient('right');
+    } 
+}
+    
 
         private static rotateAngle: number = 270;
         private generateAxisLabels(): Legend[] {
@@ -682,11 +717,12 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
 
             playBtn.exit().remove();
         }*/
-        private static LINE_DEBUG = true;
+
         private static pathClassName: string = "path";
         private static pathPlotClassName: string = "path.plot";
         private static plotClassName: string = "plot";
         private static lineClip: string = "lineClip";
+        public static temp111: number = 0;
         private drawLine(linePathSelection: d3.selection.Update<LineDotPoint[]>) {
             if(LineChart.debugMode == true){
                 LineChart.target.innerHTML += "<p>drawline() start</p>";
@@ -697,69 +733,46 @@ module powerbi.extensibility.visual.lineBase7208B18920D946BCB1A3B34BF2CC8FA3  {
             pathPlot.enter()
                 .append('path')
                 .classed(LineChart.plotClassName, true);
-<<<<<<< HEAD
-            // Draw the line
-            if(this.settings.lineoptions.lineThreshold == false){
-                pathPlot
-                .append("linearGradient")
-                .attr("id", "temperature-gradient")
-                    .attr("gradientUntits", "userSpaceOnUse")
-                    .attr("x1",0).attr("y1", this.settings.yAxis.yscaleminin)
-                    .attr("x2",0).attr("y2", this.settings.yAxis.yscalemaxin)
-                    .selectAll("stop")
-                        .data([
-                            {offset: "0%", color: this.settings.lineoptions.fill},
-                            {offset: "50%", color: this.settings.lineoptions.fill},
-                            {offset: "50%", color: this.settings.lineoptions.lineThresholdColor},
-                            {offset: "100%", color: this.settings.lineoptions.lineThresholdColor}
-                        ])
-                    .enter().append("stop")
-                        .attr("offset", function(d){ return d.offset;})
-                        .attr("stop-color", function(d){return d.color;});
-            }
-=======
->>>>>>> parent of 1e8f0c9b... Merged Dynamc Y and Started implementing colouring
 
             // Draw the line
+            var temp1111: number = 0; 
             const drawLine: d3.svg.Line<LineDotPoint> = d3.svg.line<LineDotPoint>()
+                
                 .x((dataPoint: LineDotPoint) => {
                     return this.xAxisProperties.scale(dataPoint.dateValue.value);
                 })
                 .y((dataPoint: LineDotPoint) => {
+                    if (this.settings.yAxis.dynamicScaling == true){
                     return this.yAxisProperties.scale(dataPoint.value);
+                    } else {
+                        if ((dataPoint.value <= this.settings.yAxis.yscalemaxin) && (dataPoint.value >= this.settings.yAxis.yscaleminin)){
+
+                            return this.yAxisProperties.scale(dataPoint.value);
+
+                        } else {
+
+                            if (dataPoint.value > this.settings.yAxis.yscalemaxin ){
+
+                                return this.yAxisProperties.scale(this.settings.yAxis.yscalemaxin);
+
+                            } else {
+                                return this.yAxisProperties.scale(this.settings.yAxis.yscaleminin);
+                            }
+                            
+                        }
+                    }
                 });
+            
 
             pathPlot
-            //    .attr('stroke', () => this.settings.lineoptions.fill)
-                .attr('stroke', 'line-gradient')
+                .attr('stroke', () => this.settings.lineoptions.fill)
                 .attr('stroke-width', this.settings.lineoptions.lineThickness)
                 .attr('d', drawLine)
                 .attr("clip-path", "url(" + location.href + '#' + LineChart.lineClip + ")");
-<<<<<<< HEAD
-            if(LineChart.debugMode == true){
-                LineChart.target.innerHTML += "<p>drawline() complete</p>";
-            }
-            
-        }
-
-        private overThreshold(d: LineDotPoint){
-            if(d.value <= this.settings.lineoptions.lineThresholdValue)
-                return true;
-            return false;
-        }
-
-        private underThreshold(d: LineDotPoint){
-            if(d.value >= this.settings.lineoptions.lineThresholdValue){
-                return true;
-            }
-            return false;
-            
-=======
                 
                 if(LineChart.debugMode == true){
                     LineChart.target.innerHTML += "<p>drawline() complete</p>";
                 }
->>>>>>> parent of 1e8f0c9b... Merged Dynamc Y and Started implementing colouring
         }
 
         private static zeroX: number = 0;
