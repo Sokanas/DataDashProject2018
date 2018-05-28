@@ -72,6 +72,8 @@ module powerbi.extensibility.visual {
         private static Legends: ClassAndSelector = createClassAndSelector("legends");
         private static Legend: ClassAndSelector = createClassAndSelector("legend");
         private static Line: ClassAndSelector = createClassAndSelector("line");
+        private static ThresholdLine: ClassAndSelector = createClassAndSelector("lineThreshold");
+        private static UpperLine: ClassAndSelector = createClassAndSelector("upperLine");
         private static LegendSize: number = 50;
         private static AxisSize: number = 30;
 
@@ -99,6 +101,8 @@ module powerbi.extensibility.visual {
         private axisY2: d3.Selection<any>;
         private legends: d3.Selection<any>;
         private line: d3.Selection<any>;
+        private thresholdLine: d3.Selection<any>;
+        private upperLine: d3.Selection<any>;
         private colors: IColorPalette;
         private xAxisProperties: IAxisProperties;
         private yAxisProperties: IAxisProperties;
@@ -115,9 +119,6 @@ module powerbi.extensibility.visual {
          * 
          * 
         */
-        
-
-
         private static debugMode: boolean = false;
         private static target: HTMLElement;
 
@@ -187,6 +188,15 @@ module powerbi.extensibility.visual {
                 .append('g')
                 .classed(LineChart.Line.className, true);
 
+            this.upperLine = this.main
+                .append('g')
+                .classed(LineChart.UpperLine.className, true);
+
+            this.thresholdLine = this.main
+                .append('g')
+                .classed(LineChart.ThresholdLine.className, true);
+
+
             this.colors = options.host.colorPalette;
 
             LineChart.target = options.element;
@@ -248,35 +258,19 @@ module powerbi.extensibility.visual {
         }
 
         public clear() {
-        /*    if (this.settings && this.settings.misc) {
-                this.settings.misc.isAnimated = false;
-            }*/
-
             this.axes.selectAll(LineChart.Axis.selectorName).selectAll("*").remove();
             this.main.selectAll(LineChart.Legends.selectorName).selectAll("*").remove();
             this.main.selectAll(LineChart.Line.selectorName).selectAll("*").remove();
             this.main.selectAll(LineChart.Legend.selectorName).selectAll("*").remove();
             this.line.selectAll(LineChart.textSelector).remove();
+            this.upperLine.selectAll(LineChart.textSelector).remove();
+            this.thresholdLine.selectAll(LineChart.textSelector).remove();
+
             if(LineChart.debugMode == true){
                 LineChart.target.innerHTML += "<p>clear() finished</p>";
             }
         }
 
-        /*public setIsStopped(isStopped: Boolean): void {
-            let objects: VisualObjectInstancesToPersist = {
-                merge: [
-                    <VisualObjectInstance>{
-                        objectName: "misc",
-                        selector: undefined,
-                        properties: {
-                            "isStopped": isStopped,
-                        }
-                    }
-                ]
-            };
-
-            this.hostService.persistProperties(objects);
-        }*/
 
         public enumerateObjectInstances(options: EnumerateVisualObjectInstancesOptions): VisualObjectInstanceEnumeration {
             return LineChartSettings.enumerateObjectInstances(
@@ -439,9 +433,13 @@ module powerbi.extensibility.visual {
             });
             settings.lineoptions.lineThickness = this.validateDataValue(settings.lineoptions.lineThickness, defaultRange.lineThickness);
             //settings.misc.duration = this.validateDataValue(settings.misc.duration, defaultRange.animationDuration);
-
+            /*if(this.tValDone == false){
+                settings.lineoptions.lineThresholdValue = (Math.abs(Math.random() * 100));
+                this.tValDone = true;
+            }*/
             return settings;
         }
+        private static tValDone: boolean = false;
         private static outerPadding: number = 0;
         private static forcedTickSize: number = 150;
         private static xLabelMaxWidth: number = 160;
@@ -572,6 +570,8 @@ module powerbi.extensibility.visual {
             this.main.attr('transform', SVGUtil.translate(this.layout.margin.left, this.layout.margin.top));
             this.legends.attr('transform', SVGUtil.translate(this.layout.margin.left, this.layout.margin.top));
             this.line.attr('transform', SVGUtil.translate(this.layout.margin.left + LineChart.LegendSize, 0));
+            this.upperLine.attr('transform', SVGUtil.translate(this.layout.margin.left + LineChart.LegendSize, 0));
+            this.thresholdLine.attr('transform', SVGUtil.translate(this.layout.margin.left + LineChart.LegendSize, 0));
             this.axes.attr('transform', SVGUtil.translate(this.layout.margin.left + LineChart.LegendSize, 0));
             this.axisX.attr('transform', SVGUtil.translate(0, this.layout.viewportIn.height - LineChart.LegendSize));
             this.axisY2.attr('transform', SVGUtil.translate(this.layout.viewportIn.width - LineChart.LegendSize - LineChart.AxisSize, 0));
@@ -581,6 +581,9 @@ module powerbi.extensibility.visual {
         private static dotPointsText: string = "g.path, g.dot-points";
         private static dotPathText: string = "g.path";
         private draw(): void {
+            if(this.settings.lineoptions.lineThreshold == false){
+                this.clear();
+            }
             if(LineChart.debugMode == true){
                 LineChart.target.innerHTML += "<p>draw start</p>";
             }
@@ -612,29 +615,78 @@ module powerbi.extensibility.visual {
                 this.xAxisProperties.xLabelMaxWidth,
                 TextMeasurementService.svgEllipsis);
 
-            /*if (this.settings.misc.isAnimated && this.settings.misc.isStopped) {
-                this.main.selectAll(LineChart.Line.selectorName).selectAll(LineChart.dotPointsText).remove();
-                this.line.selectAll(LineChart.textSelector).remove();
-
-                return;
-            }*/
 
             this.applyAxisSettings();
-            let linePathSelection: d3.selection.Update<LineDotPoint[]> = this.line
+
+            let lower: LineDotPoint[];
+            let upper: LineDotPoint[];
+
+            if(this.settings.lineoptions.lineThreshold == true){
+                //If threshold colouring is enabled, filter the dotpoint data into appropriate collections
+                /*
+                PowerBI doesn't do loops. This isn't a documented thing!!!!!!
+
+                
+                
+                if(LineChart.debugMode == true){
+                    LineChart.target.innerHTML += "<p>Items in Array: "+this.data.dotPoints.length+"</p>";
+                    LineChart.target.innerHTML += "<p>Threshold is: "+x+"</p>";
+                }
+
+                for(var i = 0; i <= this.data.dotPoints.length; i++){
+                    var element = this.data.dotPoints[i];
+                    if(LineChart.debugMode == true){
+                        LineChart.target.innerHTML += "<p>i: "+i+ " [" +element.value+"]</p>";
+                    }
+                    if(element.value < x)
+                    {
+                        lower.push(element);
+                    }
+                    else{
+                        upper.push(element);
+                    }
+                }*/
+            var x = this.settings.lineoptions.lineThresholdValue;
+            if(LineChart.debugMode == true){
+                LineChart.target.innerHTML += "<p>draw lower line</p>";
+            }
+                //Colour the graph based on threshold
+                let lowerPathSelection: d3.selection.Update<LineDotPoint[]> = this.line
+                .selectAll(LineChart.dotPathText)
+                .data([this.data.dotPoints.filter(function(d){
+                        //if(d.value < x)
+                            return d;
+                    })
+                ]);
+                lowerPathSelection
+                    .exit().remove();
+                this.drawLine(lowerPathSelection);
+                
+            if(LineChart.debugMode == true){
+                LineChart.target.innerHTML += "<p>draw upper line</p>";
+            }
+                let upperPathSelection: d3.selection.Update<LineDotPoint[]> = this.upperLine
+                .selectAll(LineChart.dotPathText)
+                .data([this.data.dotPoints.filter(function(d){
+                        if(d.value >= x)
+                            return d;
+                    })
+                ]);
+                upperPathSelection
+                    .exit().remove();
+                this.drawUpperLine(upperPathSelection);
+            }else{
+            //    this.upperLine.remove();
+                //Original Line Draw Method and Data Selection
+                let linePathSelection: d3.selection.Update<LineDotPoint[]> = this.line
                 .selectAll(LineChart.dotPathText)
                 .data([this.data.dotPoints]);
-            linePathSelection
-                .exit().remove();
-
-        
-            if(LineChart.debugMode == true){
-                LineChart.target.innerHTML += "<p>draw line</p>";
+                linePathSelection
+                    .exit().remove();
+                this.drawLine(linePathSelection);
             }
 
-            this.drawLine(linePathSelection);
-            //this.drawClipPath(linePathSelection);
-
-            //this.drawDots();
+            //this.drawDots();      // No Dots!!!
         }
 
         public applyAxisSettings(): void {
@@ -666,57 +718,7 @@ module powerbi.extensibility.visual {
             }
         }
 
-        private static LineChartPlayBtn: string = "LineChart__playBtn";
-        private static LineChartPlayBtnTranslate: string = "LineChartPlayBtnTranslate";
-        private static gLineChartPayBtn: string = "g.LineChart__playBtn";
-        private static playBtnGroupDiameter: number = 34;
-        private static playBtnGroupLineValues: string = "M0 2l10 6-10 6z";
-        private static playBtnGroupPlayTranslate: string = "playBtnGroupPlayTranslate";
-        private static playBtnGroupPathTranslate: string = "playBtnGroupPathTranslate";
-        private static playBtnGroupRectTranslate: string = "playBtnGroupRectTranslate";
-        private static playBtnGroupRectWidth: string = "2";
-        private static playBtnGroupRectHeight: string = "12";
-        private static StopButton: ClassAndSelector = createClassAndSelector("stop");
-        /*private drawPlaybackButtons() {
-            let playBtn: d3.selection.Update<string> = this.line.selectAll(LineChart.gLineChartPayBtn).data([""]);
-            let playBtnGroup: d3.Selection<string> = playBtn.enter()
-                .append("g")
-                .classed(LineChart.LineChartPlayBtn, true);
-
-            playBtnGroup
-                .classed(LineChart.LineChartPlayBtnTranslate, true)
-                .append("circle")
-                .attr("r", LineChart.playBtnGroupDiameter / 2)
-                .on('click', () => this.setIsStopped(!this.settings.misc.isStopped));
-
-            playBtnGroup.append("path")
-                .classed("play", true)
-                .classed(LineChart.playBtnGroupPlayTranslate, true)
-                .attr("d", LineChart.playBtnGroupLineValues)
-                .attr('pointer-events', "none");
-
-            playBtnGroup
-                .append("path")
-                .classed(LineChart.StopButton.className, true)
-                .classed(LineChart.playBtnGroupPathTranslate, true)
-                .attr("d", LineChart.playBtnGroupLineValues)
-                .attr("transform-origin", "center")
-                .attr('pointer-events', "none");
-
-            playBtnGroup
-                .append("rect")
-                .classed(LineChart.StopButton.className, true)
-                .classed(LineChart.playBtnGroupRectTranslate, true)
-                .attr("width", LineChart.playBtnGroupRectWidth)
-                .attr("height", LineChart.playBtnGroupRectHeight)
-                .attr('pointer-events', "none");
-
-            playBtn.selectAll("circle").attr("opacity", () => this.settings.misc.isAnimated ? 1 : 0);
-            playBtn.selectAll(".play").attr("opacity", () => this.settings.misc.isAnimated && this.settings.misc.isStopped ? 1 : 0);
-            playBtn.selectAll(LineChart.StopButton.selectorName).attr("opacity", () => this.settings.misc.isAnimated && !this.settings.misc.isStopped ? 1 : 0);
-
-            playBtn.exit().remove();
-        }*/
+       
         private static LINE_DEBUG = true;
         private static pathClassName: string = "path";
         private static pathPlotClassName: string = "path.plot";
@@ -763,60 +765,57 @@ module powerbi.extensibility.visual {
 
             pathPlot
                 .attr('stroke', () => this.settings.lineoptions.fill)
-                .attr('stroke', '.line-gradient')
+            //    .attr('stroke', 'url(#line-gradient)')
                 .attr('stroke-width', this.settings.lineoptions.lineThickness)
-                .attr('d', drawLine)
-                .attr("clip-path", "url(" + location.href + '#' + LineChart.lineClip + ")");
+                .attr('d', drawLine);
             if(LineChart.debugMode == true){
                 LineChart.target.innerHTML += "<p>drawline() complete</p>";
             }
             
         }
 
-        private overThreshold(d: LineDotPoint){
-            if(d.value <= this.settings.lineoptions.lineThresholdValue)
-                return true;
-            return false;
-        }
-
-        private underThreshold(d: LineDotPoint){
-            if(d.value >= this.settings.lineoptions.lineThresholdValue){
-                return true;
+       private drawUpperLine(linePathSelection: d3.selection.Update<LineDotPoint[]>){
+            if(LineChart.debugMode == true){
+                LineChart.target.innerHTML += "<p>drawupperline() start</p>";
             }
-            return false;
-            
-        }
+            linePathSelection.enter().append("g").classed(LineChart.pathClassName, true);
 
-        private static zeroX: number = 0;
-        private static zeroY: number = 0;
-        private static millisecondsInOneSecond: number = 1000;
-        private drawClipPath(linePathSelection: d3.selection.Update<any>) {
-            let clipPath: d3.selection.Update<any> = linePathSelection.selectAll("clipPath").data(d => [d]);
-            clipPath.enter().append("clipPath")
-                .attr("id", LineChart.lineClip)
-                .append("rect")
-                .attr("x", LineChart.zeroX)
-                .attr("y", LineChart.zeroY)
-                .attr("height", this.layout.viewportIn.height);
+            let pathPlot: d3.selection.Update<LineDotPoint[]> = linePathSelection.selectAll(LineChart.pathPlotClassName).data(d => [d]);
+            pathPlot.enter()
+                .append('path')
+                .classed(LineChart.plotClassName, true);
+            // Draw the line
+         
+            var drawLine: d3.svg.Line<LineDotPoint> = d3.svg.line<LineDotPoint>()
+                .x((dataPoint: LineDotPoint) => {
+                    return this.xAxisProperties.scale(dataPoint.dateValue.value);
+                })
+                .y((dataPoint: LineDotPoint) => {
+                    if (this.settings.yAxis.dynamicScaling == true){
+                    return this.yAxisProperties.scale(dataPoint.value);
+                    } else {
+                        if ((dataPoint.value <= this.settings.yAxis.yscalemaxin) && (dataPoint.value >= this.settings.yAxis.yscaleminin)){
 
-            let line_left: any = this.xAxisProperties.scale(_.first(this.data.dotPoints).dateValue.value);
-            let line_right: any = this.xAxisProperties.scale(_.last(this.data.dotPoints).dateValue.value);
+                            return this.yAxisProperties.scale(dataPoint.value);
 
-            /*if (this.settings.misc.isAnimated) {
-                clipPath
-                    .selectAll("rect")
-                    .attr('x', line_left)
-                    .attr('width', 0)
-                    .attr("height", this.layout.viewportIn.height)
-                    .interrupt()
-                    .transition()
-                    .ease("linear")
-                    .duration(this.animationDuration * LineChart.millisecondsInOneSecond)
-                    .attr('width', line_right - line_left);
-            } else {
-                linePathSelection.selectAll("clipPath").remove();
-            }*/
-            linePathSelection.selectAll("clipPath").remove();
+                        } else {
+
+                            if (dataPoint.value > this.settings.yAxis.yscalemaxin ){
+
+                                return this.yAxisProperties.scale(this.settings.yAxis.yscalemaxin);
+
+                            } else {
+                                return this.yAxisProperties.scale(this.settings.yAxis.yscaleminin);
+                            }
+                            
+                        }
+                    }
+                });
+
+            pathPlot
+                .attr('stroke', () => this.settings.lineoptions.lineThresholdColor)
+                .attr('stroke-width', this.settings.lineoptions.lineThickness)
+                .attr('d', drawLine);
         }
 
         private static pointTime: number = 300;
@@ -949,21 +948,6 @@ module powerbi.extensibility.visual {
             }
         }
 
-        /*private get animationDuration(): number {
-            if (this.settings && this.settings.misc) {
-                return this.settings.misc.duration;
-            }
-            return 0;
-        }
-
-        private stopAnimation(): void {
-            this.line.selectAll("*")
-                .transition()
-                .duration(0)
-                .delay(0);
-
-            d3.timer.flush();
-        }*/
 
         private static textSelector: string = "text.text";
         private static widthMargin: number = 85;
@@ -971,23 +955,6 @@ module powerbi.extensibility.visual {
         private updateLineText(textSelector: d3.Selection<any>, text?: string): void {
             textSelector.text(d => text);
         }
-
-        /*private pointDelay(points: LineDotPoint[], num: number, animation_duration: number): number {
-            if (!points.length
-                || !points[num]
-                || num === 0
-                || !this.settings.misc.isAnimated
-                || this.settings.misc.isStopped) {
-
-                return 0;
-            }
-
-            let time: number = points[num].dateValue.value,
-                min: number = points[0].dateValue.value,
-                max: number = points[points.length - 1].dateValue.value;
-
-            return animation_duration * 1000 * (time - min) / (max - min);
-        }*/
 
         private static showClassName: string = 'show';
         private showDataPoint(data: LineDotPoint, index: number): void {

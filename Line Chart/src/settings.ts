@@ -54,10 +54,11 @@ module powerbi.extensibility.visual {
         public fill: string = "rgb(102, 212, 204)";
         public lineThickness: number = 3;
         public lineThreshold: boolean = false;
+        //public lineThresholdLine: boolean = false;
         //public lineMinorThresholdColor: string = "black";
         public lineThresholdColor: string = "black";
         //public lineMinorThreshold: number = -1;
-        public lineThresholdValue: number = -1;
+        public lineThresholdValue: number = 50;
     }
 
     export class DotSettings {

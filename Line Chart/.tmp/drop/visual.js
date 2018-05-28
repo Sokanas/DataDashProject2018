@@ -28781,10 +28781,11 @@ var powerbi;
                         this.fill = "rgb(102, 212, 204)";
                         this.lineThickness = 3;
                         this.lineThreshold = false;
+                        //public lineThresholdLine: boolean = false;
                         //public lineMinorThresholdColor: string = "black";
                         this.lineThresholdColor = "black";
                         //public lineMinorThreshold: number = -1;
-                        this.lineThresholdValue = -1;
+                        this.lineThresholdValue = 50;
                     }
                     return LineSettings;
                 }());
@@ -29222,6 +29223,12 @@ var powerbi;
                         this.line = this.main
                             .append('g')
                             .classed(LineChart.Line.className, true);
+                        this.upperLine = this.main
+                            .append('g')
+                            .classed(LineChart.UpperLine.className, true);
+                        this.thresholdLine = this.main
+                            .append('g')
+                            .classed(LineChart.ThresholdLine.className, true);
                         this.colors = options.host.colorPalette;
                         LineChart.target = options.element;
                     }
@@ -29281,33 +29288,17 @@ var powerbi;
                         }
                     };
                     LineChart.prototype.clear = function () {
-                        /*    if (this.settings && this.settings.misc) {
-                                this.settings.misc.isAnimated = false;
-                            }*/
                         this.axes.selectAll(LineChart.Axis.selectorName).selectAll("*").remove();
                         this.main.selectAll(LineChart.Legends.selectorName).selectAll("*").remove();
                         this.main.selectAll(LineChart.Line.selectorName).selectAll("*").remove();
                         this.main.selectAll(LineChart.Legend.selectorName).selectAll("*").remove();
                         this.line.selectAll(LineChart.textSelector).remove();
+                        this.upperLine.selectAll(LineChart.textSelector).remove();
+                        this.thresholdLine.selectAll(LineChart.textSelector).remove();
                         if (LineChart.debugMode == true) {
                             LineChart.target.innerHTML += "<p>clear() finished</p>";
                         }
                     };
-                    /*public setIsStopped(isStopped: Boolean): void {
-                        let objects: VisualObjectInstancesToPersist = {
-                            merge: [
-                                <VisualObjectInstance>{
-                                    objectName: "misc",
-                                    selector: undefined,
-                                    properties: {
-                                        "isStopped": isStopped,
-                                    }
-                                }
-                            ]
-                        };
-            
-                        this.hostService.persistProperties(objects);
-                    }*/
                     LineChart.prototype.enumerateObjectInstances = function (options) {
                         return lineBase7208B18920D946BCB1A3B34BF2CC8FA3.LineChartSettings.enumerateObjectInstances(this.settings || lineBase7208B18920D946BCB1A3B34BF2CC8FA3.LineChartSettings.getDefault(), options);
                     };
@@ -29435,6 +29426,10 @@ var powerbi;
                         });
                         settings.lineoptions.lineThickness = this.validateDataValue(settings.lineoptions.lineThickness, defaultRange.lineThickness);
                         //settings.misc.duration = this.validateDataValue(settings.misc.duration, defaultRange.animationDuration);
+                        /*if(this.tValDone == false){
+                            settings.lineoptions.lineThresholdValue = (Math.abs(Math.random() * 100));
+                            this.tValDone = true;
+                        }*/
                         return settings;
                     };
                     LineChart.prototype.calculateAxes = function () {
@@ -29547,11 +29542,16 @@ var powerbi;
                         this.main.attr('transform', SVGUtil.translate(this.layout.margin.left, this.layout.margin.top));
                         this.legends.attr('transform', SVGUtil.translate(this.layout.margin.left, this.layout.margin.top));
                         this.line.attr('transform', SVGUtil.translate(this.layout.margin.left + LineChart.LegendSize, 0));
+                        this.upperLine.attr('transform', SVGUtil.translate(this.layout.margin.left + LineChart.LegendSize, 0));
+                        this.thresholdLine.attr('transform', SVGUtil.translate(this.layout.margin.left + LineChart.LegendSize, 0));
                         this.axes.attr('transform', SVGUtil.translate(this.layout.margin.left + LineChart.LegendSize, 0));
                         this.axisX.attr('transform', SVGUtil.translate(0, this.layout.viewportIn.height - LineChart.LegendSize));
                         this.axisY2.attr('transform', SVGUtil.translate(this.layout.viewportIn.width - LineChart.LegendSize - LineChart.AxisSize, 0));
                     };
                     LineChart.prototype.draw = function () {
+                        if (this.settings.lineoptions.lineThreshold == false) {
+                            this.clear();
+                        }
                         if (LineChart.debugMode == true) {
                             LineChart.target.innerHTML += "<p>draw start</p>";
                         }
@@ -29578,24 +29578,74 @@ var powerbi;
                             this.clearElement(this.axisY2);
                         }
                         this.axisX.selectAll(LineChart.tickText).call(AxisHelper.LabelLayoutStrategy.clip, this.xAxisProperties.xLabelMaxWidth, TextMeasurementService.svgEllipsis);
-                        /*if (this.settings.misc.isAnimated && this.settings.misc.isStopped) {
-                            this.main.selectAll(LineChart.Line.selectorName).selectAll(LineChart.dotPointsText).remove();
-                            this.line.selectAll(LineChart.textSelector).remove();
-            
-                            return;
-                        }*/
                         this.applyAxisSettings();
-                        var linePathSelection = this.line
-                            .selectAll(LineChart.dotPathText)
-                            .data([this.data.dotPoints]);
-                        linePathSelection
-                            .exit().remove();
-                        if (LineChart.debugMode == true) {
-                            LineChart.target.innerHTML += "<p>draw line</p>";
+                        var lower;
+                        var upper;
+                        if (this.settings.lineoptions.lineThreshold == true) {
+                            //If threshold colouring is enabled, filter the dotpoint data into appropriate collections
+                            /*
+                            PowerBI doesn't do loops. This isn't a documented thing!!!!!!
+            
+                            
+                            
+                            if(LineChart.debugMode == true){
+                                LineChart.target.innerHTML += "<p>Items in Array: "+this.data.dotPoints.length+"</p>";
+                                LineChart.target.innerHTML += "<p>Threshold is: "+x+"</p>";
+                            }
+            
+                            for(var i = 0; i <= this.data.dotPoints.length; i++){
+                                var element = this.data.dotPoints[i];
+                                if(LineChart.debugMode == true){
+                                    LineChart.target.innerHTML += "<p>i: "+i+ " [" +element.value+"]</p>";
+                                }
+                                if(element.value < x)
+                                {
+                                    lower.push(element);
+                                }
+                                else{
+                                    upper.push(element);
+                                }
+                            }*/
+                            var x = this.settings.lineoptions.lineThresholdValue;
+                            if (LineChart.debugMode == true) {
+                                LineChart.target.innerHTML += "<p>draw lower line</p>";
+                            }
+                            //Colour the graph based on threshold
+                            var lowerPathSelection = this.line
+                                .selectAll(LineChart.dotPathText)
+                                .data([this.data.dotPoints.filter(function (d) {
+                                    //if(d.value < x)
+                                    return d;
+                                })
+                            ]);
+                            lowerPathSelection
+                                .exit().remove();
+                            this.drawLine(lowerPathSelection);
+                            if (LineChart.debugMode == true) {
+                                LineChart.target.innerHTML += "<p>draw upper line</p>";
+                            }
+                            var upperPathSelection = this.upperLine
+                                .selectAll(LineChart.dotPathText)
+                                .data([this.data.dotPoints.filter(function (d) {
+                                    if (d.value >= x)
+                                        return d;
+                                })
+                            ]);
+                            upperPathSelection
+                                .exit().remove();
+                            this.drawUpperLine(upperPathSelection);
                         }
-                        this.drawLine(linePathSelection);
-                        //this.drawClipPath(linePathSelection);
-                        //this.drawDots();
+                        else {
+                            //    this.upperLine.remove();
+                            //Original Line Draw Method and Data Selection
+                            var linePathSelection = this.line
+                                .selectAll(LineChart.dotPathText)
+                                .data([this.data.dotPoints]);
+                            linePathSelection
+                                .exit().remove();
+                            this.drawLine(linePathSelection);
+                        }
+                        //this.drawDots();      // No Dots!!!
                     };
                     LineChart.prototype.applyAxisSettings = function () {
                         var xColor = LineChart.axesDefaultColor, yColor = LineChart.axesDefaultColor, xFontSize = convertToPt(LineChart.axesDefaultfontSize), yFontSize = convertToPt(LineChart.axesDefaultfontSize);
@@ -29655,50 +29705,49 @@ var powerbi;
                         });
                         pathPlot
                             .attr('stroke', function () { return _this.settings.lineoptions.fill; })
-                            .attr('stroke', '.line-gradient')
                             .attr('stroke-width', this.settings.lineoptions.lineThickness)
-                            .attr('d', drawLine)
-                            .attr("clip-path", "url(" + location.href + '#' + LineChart.lineClip + ")");
+                            .attr('d', drawLine);
                         if (LineChart.debugMode == true) {
                             LineChart.target.innerHTML += "<p>drawline() complete</p>";
                         }
                     };
-                    LineChart.prototype.overThreshold = function (d) {
-                        if (d.value <= this.settings.lineoptions.lineThresholdValue)
-                            return true;
-                        return false;
-                    };
-                    LineChart.prototype.underThreshold = function (d) {
-                        if (d.value >= this.settings.lineoptions.lineThresholdValue) {
-                            return true;
+                    LineChart.prototype.drawUpperLine = function (linePathSelection) {
+                        var _this = this;
+                        if (LineChart.debugMode == true) {
+                            LineChart.target.innerHTML += "<p>drawupperline() start</p>";
                         }
-                        return false;
-                    };
-                    LineChart.prototype.drawClipPath = function (linePathSelection) {
-                        var clipPath = linePathSelection.selectAll("clipPath").data(function (d) { return [d]; });
-                        clipPath.enter().append("clipPath")
-                            .attr("id", LineChart.lineClip)
-                            .append("rect")
-                            .attr("x", LineChart.zeroX)
-                            .attr("y", LineChart.zeroY)
-                            .attr("height", this.layout.viewportIn.height);
-                        var line_left = this.xAxisProperties.scale(_.first(this.data.dotPoints).dateValue.value);
-                        var line_right = this.xAxisProperties.scale(_.last(this.data.dotPoints).dateValue.value);
-                        /*if (this.settings.misc.isAnimated) {
-                            clipPath
-                                .selectAll("rect")
-                                .attr('x', line_left)
-                                .attr('width', 0)
-                                .attr("height", this.layout.viewportIn.height)
-                                .interrupt()
-                                .transition()
-                                .ease("linear")
-                                .duration(this.animationDuration * LineChart.millisecondsInOneSecond)
-                                .attr('width', line_right - line_left);
-                        } else {
-                            linePathSelection.selectAll("clipPath").remove();
-                        }*/
-                        linePathSelection.selectAll("clipPath").remove();
+                        linePathSelection.enter().append("g").classed(LineChart.pathClassName, true);
+                        var pathPlot = linePathSelection.selectAll(LineChart.pathPlotClassName).data(function (d) { return [d]; });
+                        pathPlot.enter()
+                            .append('path')
+                            .classed(LineChart.plotClassName, true);
+                        // Draw the line
+                        var drawLine = d3.svg.line()
+                            .x(function (dataPoint) {
+                            return _this.xAxisProperties.scale(dataPoint.dateValue.value);
+                        })
+                            .y(function (dataPoint) {
+                            if (_this.settings.yAxis.dynamicScaling == true) {
+                                return _this.yAxisProperties.scale(dataPoint.value);
+                            }
+                            else {
+                                if ((dataPoint.value <= _this.settings.yAxis.yscalemaxin) && (dataPoint.value >= _this.settings.yAxis.yscaleminin)) {
+                                    return _this.yAxisProperties.scale(dataPoint.value);
+                                }
+                                else {
+                                    if (dataPoint.value > _this.settings.yAxis.yscalemaxin) {
+                                        return _this.yAxisProperties.scale(_this.settings.yAxis.yscalemaxin);
+                                    }
+                                    else {
+                                        return _this.yAxisProperties.scale(_this.settings.yAxis.yscaleminin);
+                                    }
+                                }
+                            }
+                        });
+                        pathPlot
+                            .attr('stroke', function () { return _this.settings.lineoptions.lineThresholdColor; })
+                            .attr('stroke-width', this.settings.lineoptions.lineThickness)
+                            .attr('d', drawLine);
                     };
                     LineChart.prototype.drawDots = function () {
                         var _this = this;
@@ -29872,6 +29921,8 @@ var powerbi;
                 LineChart.Legends = createClassAndSelector("legends");
                 LineChart.Legend = createClassAndSelector("legend");
                 LineChart.Line = createClassAndSelector("line");
+                LineChart.ThresholdLine = createClassAndSelector("lineThreshold");
+                LineChart.UpperLine = createClassAndSelector("upperLine");
                 LineChart.LegendSize = 50;
                 LineChart.AxisSize = 30;
                 LineChart.defaultSettingsRange = {
@@ -29910,6 +29961,7 @@ var powerbi;
                 };
                 LineChart.dateMaxCutter = .05;
                 LineChart.makeSomeSpaceForCounter = .10;
+                LineChart.tValDone = false;
                 LineChart.outerPadding = 0;
                 LineChart.forcedTickSize = 150;
                 LineChart.xLabelMaxWidth = 160;
@@ -29918,104 +29970,19 @@ var powerbi;
                 LineChart.tickText = '.tick text';
                 LineChart.dotPointsText = "g.path, g.dot-points";
                 LineChart.dotPathText = "g.path";
-                LineChart.LineChartPlayBtn = "LineChart__playBtn";
-                LineChart.LineChartPlayBtnTranslate = "LineChartPlayBtnTranslate";
-                LineChart.gLineChartPayBtn = "g.LineChart__playBtn";
-                LineChart.playBtnGroupDiameter = 34;
-                LineChart.playBtnGroupLineValues = "M0 2l10 6-10 6z";
-                LineChart.playBtnGroupPlayTranslate = "playBtnGroupPlayTranslate";
-                LineChart.playBtnGroupPathTranslate = "playBtnGroupPathTranslate";
-                LineChart.playBtnGroupRectTranslate = "playBtnGroupRectTranslate";
-                LineChart.playBtnGroupRectWidth = "2";
-                LineChart.playBtnGroupRectHeight = "12";
-                LineChart.StopButton = createClassAndSelector("stop");
-                /*private drawPlaybackButtons() {
-                    let playBtn: d3.selection.Update<string> = this.line.selectAll(LineChart.gLineChartPayBtn).data([""]);
-                    let playBtnGroup: d3.Selection<string> = playBtn.enter()
-                        .append("g")
-                        .classed(LineChart.LineChartPlayBtn, true);
-        
-                    playBtnGroup
-                        .classed(LineChart.LineChartPlayBtnTranslate, true)
-                        .append("circle")
-                        .attr("r", LineChart.playBtnGroupDiameter / 2)
-                        .on('click', () => this.setIsStopped(!this.settings.misc.isStopped));
-        
-                    playBtnGroup.append("path")
-                        .classed("play", true)
-                        .classed(LineChart.playBtnGroupPlayTranslate, true)
-                        .attr("d", LineChart.playBtnGroupLineValues)
-                        .attr('pointer-events', "none");
-        
-                    playBtnGroup
-                        .append("path")
-                        .classed(LineChart.StopButton.className, true)
-                        .classed(LineChart.playBtnGroupPathTranslate, true)
-                        .attr("d", LineChart.playBtnGroupLineValues)
-                        .attr("transform-origin", "center")
-                        .attr('pointer-events', "none");
-        
-                    playBtnGroup
-                        .append("rect")
-                        .classed(LineChart.StopButton.className, true)
-                        .classed(LineChart.playBtnGroupRectTranslate, true)
-                        .attr("width", LineChart.playBtnGroupRectWidth)
-                        .attr("height", LineChart.playBtnGroupRectHeight)
-                        .attr('pointer-events', "none");
-        
-                    playBtn.selectAll("circle").attr("opacity", () => this.settings.misc.isAnimated ? 1 : 0);
-                    playBtn.selectAll(".play").attr("opacity", () => this.settings.misc.isAnimated && this.settings.misc.isStopped ? 1 : 0);
-                    playBtn.selectAll(LineChart.StopButton.selectorName).attr("opacity", () => this.settings.misc.isAnimated && !this.settings.misc.isStopped ? 1 : 0);
-        
-                    playBtn.exit().remove();
-                }*/
                 LineChart.LINE_DEBUG = true;
                 LineChart.pathClassName = "path";
                 LineChart.pathPlotClassName = "path.plot";
                 LineChart.plotClassName = "plot";
                 LineChart.lineClip = "lineClip";
-                LineChart.zeroX = 0;
-                LineChart.zeroY = 0;
-                LineChart.millisecondsInOneSecond = 1000;
                 LineChart.pointTime = 300;
                 LineChart.dotPointsClass = "dot-points";
                 LineChart.pointClassName = 'point';
                 LineChart.pointScaleValue = 0.005;
                 LineChart.pointTransformScaleValue = 3.4;
-                /*private get animationDuration(): number {
-                    if (this.settings && this.settings.misc) {
-                        return this.settings.misc.duration;
-                    }
-                    return 0;
-                }
-        
-                private stopAnimation(): void {
-                    this.line.selectAll("*")
-                        .transition()
-                        .duration(0)
-                        .delay(0);
-        
-                    d3.timer.flush();
-                }*/
                 LineChart.textSelector = "text.text";
                 LineChart.widthMargin = 85;
                 LineChart.yPosition = 30;
-                /*private pointDelay(points: LineDotPoint[], num: number, animation_duration: number): number {
-                    if (!points.length
-                        || !points[num]
-                        || num === 0
-                        || !this.settings.misc.isAnimated
-                        || this.settings.misc.isStopped) {
-        
-                        return 0;
-                    }
-        
-                    let time: number = points[num].dateValue.value,
-                        min: number = points[0].dateValue.value,
-                        max: number = points[points.length - 1].dateValue.value;
-        
-                    return animation_duration * 1000 * (time - min) / (max - min);
-                }*/
                 LineChart.showClassName = 'show';
                 lineBase7208B18920D946BCB1A3B34BF2CC8FA3.LineChart = LineChart;
                 var LineChartUtils;

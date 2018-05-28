@@ -96,34 +96,16 @@
             "numeric": true
           }
         },
-        "lineMinorThreshold": {
-          "displayName": "Minor Threshold",
-          "displayNameKey": "Minor_Threshold",
+        "lineThresholdValue": {
+          "displayName": "Threshold",
+          "displayNameKey": "Threshold",
           "type": {
             "numeric": true
           }
         },
-        "lineMajorThreshold": {
-          "displayName": "Major Threshold",
-          "displayNameKey": "Major_Threshold",
-          "type": {
-            "numeric": true
-          }
-        },
-        "lineMinorThresholdColor": {
-          "displayName": "Minor Th. Color",
-          "displayNameKey": "Visual_Color2",
-          "type": {
-            "fill": {
-              "solid": {
-                "color": true
-              }
-            }
-          }
-        },
-        "lineMajorThresholdColor": {
-          "displayName": "Major Th. Color",
-          "displayNameKey": "Visual_Color3",
+        "lineThresholdColor": {
+          "displayName": "Threshold Color",
+          "displayNameKey": "Visual_Color",
           "type": {
             "fill": {
               "solid": {
@@ -137,51 +119,6 @@
           "displayNameKey": "Threshold_Enables",
           "type": {
             "bool": true
-          }
-        }
-      }
-    },
-    "dotoptions": {
-      "displayName": "Dot",
-      "displayNameKey": "Visual_Dot",
-      "properties": {
-        "show": {
-          "displayName": "Show",
-          "displayNameKey": "Visual_Show",
-          "type": {
-            "bool": true
-          }
-        },
-        "percentile": {
-          "displayName": "Opacity",
-          "displayNameKey": "Visual_Opacity",
-         "type": {
-            "numeric": true
-          }
-        },
-        "color": {
-          "displayName": "Fill",
-          "displayNameKey": "Visual_Fill",
-          "type": {
-            "fill": {
-              "solid": {
-                "color": true
-              }
-            }
-          }
-        },
-        "dotSizeMin": {
-          "displayName": "Min size",
-          "displayNameKey": "Visual_MinSize",
-          "type": {
-            "numeric": true
-          }
-        },
-        "dotSizeMax": {
-          "displayName": "Max size",
-          "displayNameKey": "Visual_MaxSize",
-          "type": {
-            "numeric": true
           }
         }
       }
@@ -259,18 +196,19 @@
           "type": {
             "bool": true
           }
-        }
-      }
-    },
-    "counteroptions": {
-      "displayName": "Counter",
-      "displayNameKey": "Visual_Counter",
-      "properties": {
-        "counterTitle": {
-          "displayName": "Title",
-          "displayNameKey": "Visual_Title",
+        },
+        "yscaleminin": {
+          "displayName": "Min Y Scale Value",
+          "displayNameKey": "yscaleminin",
           "type": {
-            "text": true
+              "numeric": true
+          }
+        },
+        "yscalemaxin": {
+          "displayName": "Max Y Scale Value",
+          "displayNameKey": "yscalemaxin",
+          "type": {
+              "numeric": true
           }
         }
       }
