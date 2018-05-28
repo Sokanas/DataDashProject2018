@@ -682,7 +682,7 @@ module powerbi.extensibility.visual {
 
             playBtn.exit().remove();
         }*/
-        private static LINE_DEBUG = true;
+
         private static pathClassName: string = "path";
         private static pathPlotClassName: string = "path.plot";
         private static plotClassName: string = "plot";
@@ -700,8 +700,11 @@ module powerbi.extensibility.visual {
 <<<<<<< HEAD
             // Draw the line
             if(this.settings.lineoptions.lineThreshold == false){
-                pathPlot
-                .append("linearGradient")
+                if(LineChart.debugMode == true){
+                    LineChart.target.innerHTML += "<p>drawline() no threshold colouring</p>";
+                }
+                var svg = this.root.select("svg");
+                svg.append("linearGradient")
                 .attr("id", "temperature-gradient")
                     .attr("gradientUntits", "userSpaceOnUse")
                     .attr("x1",0).attr("y1", this.settings.yAxis.yscaleminin)
@@ -730,8 +733,7 @@ module powerbi.extensibility.visual {
                 });
 
             pathPlot
-            //    .attr('stroke', () => this.settings.lineoptions.fill)
-                .attr('stroke', 'line-gradient')
+                .attr('stroke', () => this.settings.lineoptions.fill)
                 .attr('stroke-width', this.settings.lineoptions.lineThickness)
                 .attr('d', drawLine)
                 .attr("clip-path", "url(" + location.href + '#' + LineChart.lineClip + ")");
@@ -739,7 +741,6 @@ module powerbi.extensibility.visual {
             if(LineChart.debugMode == true){
                 LineChart.target.innerHTML += "<p>drawline() complete</p>";
             }
-            
         }
 
         private overThreshold(d: LineDotPoint){

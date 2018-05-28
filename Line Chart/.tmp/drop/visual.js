@@ -29603,8 +29603,11 @@ var powerbi;
                         // Draw the line
 <<<<<<< HEAD
                         if (this.settings.lineoptions.lineThreshold == false) {
-                            pathPlot
-                                .append("linearGradient")
+                            if (LineChart.debugMode == true) {
+                                LineChart.target.innerHTML += "<p>drawline() no threshold colouring</p>";
+                            }
+                            var svg = this.root.select("svg");
+                            svg.append("linearGradient")
                                 .attr("id", "temperature-gradient")
                                 .attr("gradientUntits", "userSpaceOnUse")
                                 .attr("x1", 0).attr("y1", this.settings.yAxis.yscaleminin)
@@ -29630,7 +29633,7 @@ var powerbi;
                             return _this.yAxisProperties.scale(dataPoint.value);
                         });
                         pathPlot
-                            .attr('stroke', 'line-gradient')
+                            .attr('stroke', function () { return _this.settings.lineoptions.fill; })
                             .attr('stroke-width', this.settings.lineoptions.lineThickness)
                             .attr('d', drawLine)
                             .attr("clip-path", "url(" + location.href + '#' + LineChart.lineClip + ")");
@@ -29933,7 +29936,6 @@ var powerbi;
         
                     playBtn.exit().remove();
                 }*/
-                LineChart.LINE_DEBUG = true;
                 LineChart.pathClassName = "path";
                 LineChart.pathPlotClassName = "path.plot";
                 LineChart.plotClassName = "plot";
