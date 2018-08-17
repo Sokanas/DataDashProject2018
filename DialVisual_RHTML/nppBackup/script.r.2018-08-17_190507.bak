@@ -22,7 +22,7 @@ libraryRequireInstall("billboarder")
 
 
   base_chart <- billboarder() %>%
-  bb_gaugechart(value = Values) %>% 
+  bb_gaugechart(value = 74) %>% 
   bb_gauge(min = 0, max = 100, threshold=list(unit="percent", max=100, values=c(50,75,100)), 
            pattern=c('red','yellow', 'green'), label = list(format = htmlwidgets::JS("function(value) {return value;}")))
 
