@@ -154,12 +154,12 @@ module powerbi.extensibility.visual {
                 bandColor: "white"
             }
         };
-    
+
         let viewModel: DialChartViewModel = {
             measure: 0,
             settings: <DialChartSettings>{}
         };
-    
+
         let dialChartSettings: DialChartSettings = {
             labels: {
                 labelSize: 10,
@@ -215,7 +215,7 @@ module powerbi.extensibility.visual {
 
         let val = dv.single.value;
         //DialChart.e.innerHTML += "<br/>dc vm single retrieved";
-        
+
         //DialChart.e.innerHTML += "<br/>default value: " + (dv.single.value as number);
         //DialChart.e.innerHTML += "<br/>dc vm ok";
         return {
@@ -433,35 +433,35 @@ module powerbi.extensibility.visual {
                     this.dialChartSettings.bandOne.bandColor,
                     this.dialChartSettings.bandOne.bandStart,
                     this.dialChartSettings.bandOne.bandEnd);
-            //        DialChart.e.innerHTML += "<br/>band 1 ok";
+                //        DialChart.e.innerHTML += "<br/>band 1 ok";
             }
             if (this.dialChartSettings.bandTwo.showBand == true) {
                 this.drawColouredArc("bandTwo",
                     this.dialChartSettings.bandTwo.bandColor,
                     this.dialChartSettings.bandTwo.bandStart,
                     this.dialChartSettings.bandTwo.bandEnd);
-            //        DialChart.e.innerHTML += "<br/>band 2 ok";
+                //        DialChart.e.innerHTML += "<br/>band 2 ok";
             }
             if (this.dialChartSettings.bandThree.showBand == true) {
                 this.drawColouredArc("bandThree",
                     this.dialChartSettings.bandThree.bandColor,
                     this.dialChartSettings.bandThree.bandStart,
                     this.dialChartSettings.bandThree.bandEnd);
-            //       DialChart.e.innerHTML += "<br/>band 3 ok";
+                //       DialChart.e.innerHTML += "<br/>band 3 ok";
             }
             if (this.dialChartSettings.bandFour.showBand == true) {
                 this.drawColouredArc("bandFour",
                     this.dialChartSettings.bandFour.bandColor,
                     this.dialChartSettings.bandFour.bandStart,
                     this.dialChartSettings.bandFour.bandEnd);
-            //        DialChart.e.innerHTML += "<br/>band 4 ok";
+                //        DialChart.e.innerHTML += "<br/>band 4 ok";
             }
             if (this.dialChartSettings.bandFive.showBand == true) {
                 this.drawColouredArc("bandFive",
                     this.dialChartSettings.bandFive.bandColor,
                     this.dialChartSettings.bandFive.bandStart,
                     this.dialChartSettings.bandFive.bandEnd);
-            //        DialChart.e.innerHTML += "<br/>band 5 ok";
+                //        DialChart.e.innerHTML += "<br/>band 5 ok";
             }
 
             //3.    Major Tick Marks
@@ -483,12 +483,12 @@ module powerbi.extensibility.visual {
                 this.drawTargetTick(this.dialChartSettings.target.targetColor,
                     this.Target,
                     8);
-             //       DialChart.e.innerHTML += "<br/>draw target line";
+                //       DialChart.e.innerHTML += "<br/>draw target line";
                 this.drawTargetLabel(this.Target);
             }
 
             if (this.dialChartSettings.labels.showMinMax == true) {
-            //    DialChart.e.innerHTML += "<br/>draw minmax";
+                //    DialChart.e.innerHTML += "<br/>draw minmax";
                 this.drawMinMaxLabel();
             }
 

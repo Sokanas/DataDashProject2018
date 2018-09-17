@@ -85,7 +85,7 @@
                         "numeric": true
                     }
                 },
-                "labelColor": {
+                "targetColor": {
                     "displayName": "Target Colour",
                     "displayNameKey": "targetColor",
                     "type": {
@@ -96,7 +96,7 @@
                         }
                     }
                 },
-                "showMinMax": {
+                "showTarget": {
                     "displayName": "Show Target Value",
                     "displayNameKey": "showTarget",
                     "type": {
@@ -109,14 +109,14 @@
             "displayName": "Dial",
             "displayNameKey": "dial",
             "properties": {
-                "dialTextSize": {
+                "dialValueSize": {
                     "displayName": "Value Size",
                     "displayNameKey": "dialValueSize",
                     "type": {
                         "numeric": true
                     }
                 },
-                "labelColor": {
+                "dialColor": {
                     "displayName": "Dial Colour",
                     "displayNameKey": "dialColor",
                     "type": {
@@ -127,7 +127,7 @@
                         }
                     }
                 },
-                "dialIndicatorSize": {
+                "dialSize": {
                     "displayName": "Dial Needle Size",
                     "displayNameKey": "dialSize",
                     "type": {
@@ -163,21 +163,21 @@
                 },
                 "bandStart": {
                     "displayName": "Start Point",
-                    "displayNameKey": "bandColor",
+                    "displayNameKey": "bandStart",
                     "type": {
                         "numeric": true
                     }
                 },
                 "bandEnd": {
                     "displayName": "End Point",
-                    "displayNameKey": "bandStart",
+                    "displayNameKey": "bandEnd",
                     "type": {
                         "numeric": true
                     }
                 },
-                "bandColour": {
-                    "displayName": "Band Colour",
-                    "displayNameKey": "bandEnd",
+                "bandColor": {
+                    "displayName": "Band Color",
+                    "displayNameKey": "bandColor",
                     "type": {
                         "fill": {
                             "solid": {
@@ -201,21 +201,21 @@
                 },
                 "bandStart": {
                     "displayName": "Start Point",
-                    "displayNameKey": "bandColor",
+                    "displayNameKey": "bandStart",
                     "type": {
                         "numeric": true
                     }
                 },
                 "bandEnd": {
                     "displayName": "End Point",
-                    "displayNameKey": "bandStart",
+                    "displayNameKey": "bandEnd",
                     "type": {
                         "numeric": true
                     }
                 },
-                "bandColour": {
-                    "displayName": "Band Colour",
-                    "displayNameKey": "bandEnd",
+                "bandColor": {
+                    "displayName": "Band Color",
+                    "displayNameKey": "bandColor",
                     "type": {
                         "fill": {
                             "solid": {
@@ -228,32 +228,32 @@
         },
         "bandThree": {
             "displayName": "Band Three",
-            "displayNameKey": "Band_Three_Settings",
+            "displayNameKey": "bandThree",
             "properties": {
                 "showBand": {
                     "displayName": "Show Band",
-                    "displayNameKey": "show_band_3",
+                    "displayNameKey": "showBand",
                     "type": {
                         "bool": true
                     }
                 },
                 "bandStart": {
                     "displayName": "Start Point",
-                    "displayNameKey": "band_start_3",
+                    "displayNameKey": "bandStart",
                     "type": {
                         "numeric": true
                     }
                 },
                 "bandEnd": {
                     "displayName": "End Point",
-                    "displayNameKey": "band_end_3",
+                    "displayNameKey": "bandEnd",
                     "type": {
                         "numeric": true
                     }
                 },
-                "bandColour": {
-                    "displayName": "Band Colour",
-                    "displayNameKey": "band_color_3",
+                "bandColor": {
+                    "displayName": "Band Color",
+                    "displayNameKey": "bandColor",
                     "type": {
                         "fill": {
                             "solid": {
@@ -266,32 +266,32 @@
         },
         "bandFour": {
             "displayName": "Band Four",
-            "displayNameKey": "Band_Four_Settings",
+            "displayNameKey": "bandFour",
             "properties": {
                 "showBand": {
                     "displayName": "Show Band",
-                    "displayNameKey": "show_band_4",
+                    "displayNameKey": "showBand",
                     "type": {
                         "bool": true
                     }
                 },
                 "bandStart": {
                     "displayName": "Start Point",
-                    "displayNameKey": "band_start_4",
+                    "displayNameKey": "bandStart",
                     "type": {
                         "numeric": true
                     }
                 },
                 "bandEnd": {
                     "displayName": "End Point",
-                    "displayNameKey": "band_end_4",
+                    "displayNameKey": "bandEnd",
                     "type": {
                         "numeric": true
                     }
                 },
-                "bandColour": {
-                    "displayName": "Band Colour",
-                    "displayNameKey": "band_color_4",
+                "bandColor": {
+                    "displayName": "Band Color",
+                    "displayNameKey": "bandColor",
                     "type": {
                         "fill": {
                             "solid": {
@@ -304,32 +304,32 @@
         },
         "bandFive": {
             "displayName": "Band Five",
-            "displayNameKey": "Band_Five_Settings",
+            "displayNameKey": "bandFive",
             "properties": {
                 "showBand": {
                     "displayName": "Show Band",
-                    "displayNameKey": "show_band_5",
+                    "displayNameKey": "showBand",
                     "type": {
                         "bool": true
                     }
                 },
                 "bandStart": {
                     "displayName": "Start Point",
-                    "displayNameKey": "band_start_5",
+                    "displayNameKey": "bandStart",
                     "type": {
                         "numeric": true
                     }
                 },
                 "bandEnd": {
                     "displayName": "End Point",
-                    "displayNameKey": "band_end_5",
+                    "displayNameKey": "bandEnd",
                     "type": {
                         "numeric": true
                     }
                 },
-                "bandColour": {
-                    "displayName": "Band Colour",
-                    "displayNameKey": "band_color_5",
+                "bandColor": {
+                    "displayName": "Band Color",
+                    "displayNameKey": "bandColor",
                     "type": {
                         "fill": {
                             "solid": {
