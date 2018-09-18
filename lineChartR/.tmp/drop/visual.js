@@ -517,18 +517,18 @@ var powerbi;
     (function (extensibility) {
         var visual;
         (function (visual) {
-            var barChart499A0A12A57F413881C384AA9A1840CB;
-            (function (barChart499A0A12A57F413881C384AA9A1840CB) {
+            var lineChartRD902E64560EE4B62A6FFD29B1499B69E;
+            (function (lineChartRD902E64560EE4B62A6FFD29B1499B69E) {
                 "use strict";
                 var injectorCounter = 0;
                 function ResetInjector() {
                     injectorCounter = 0;
                 }
-                barChart499A0A12A57F413881C384AA9A1840CB.ResetInjector = ResetInjector;
+                lineChartRD902E64560EE4B62A6FFD29B1499B69E.ResetInjector = ResetInjector;
                 function injectorReady() {
                     return injectorCounter === 0;
                 }
-                barChart499A0A12A57F413881C384AA9A1840CB.injectorReady = injectorReady;
+                lineChartRD902E64560EE4B62A6FFD29B1499B69E.injectorReady = injectorReady;
                 function ParseElement(el, target) {
                     var arr = [];
                     if (!el || !el.hasChildNodes()) {
@@ -548,7 +548,7 @@ var powerbi;
                     }
                     return arr;
                 }
-                barChart499A0A12A57F413881C384AA9A1840CB.ParseElement = ParseElement;
+                lineChartRD902E64560EE4B62A6FFD29B1499B69E.ParseElement = ParseElement;
                 function createScriptNode(refNode) {
                     var script = document.createElement("script");
                     var attr = refNode.attributes;
@@ -577,8 +577,8 @@ var powerbi;
                         }
                     }, 100);
                 }
-                barChart499A0A12A57F413881C384AA9A1840CB.RunHTMLWidgetRenderer = RunHTMLWidgetRenderer;
-            })(barChart499A0A12A57F413881C384AA9A1840CB = visual.barChart499A0A12A57F413881C384AA9A1840CB || (visual.barChart499A0A12A57F413881C384AA9A1840CB = {}));
+                lineChartRD902E64560EE4B62A6FFD29B1499B69E.RunHTMLWidgetRenderer = RunHTMLWidgetRenderer;
+            })(lineChartRD902E64560EE4B62A6FFD29B1499B69E = visual.lineChartRD902E64560EE4B62A6FFD29B1499B69E || (visual.lineChartRD902E64560EE4B62A6FFD29B1499B69E = {}));
         })(visual = extensibility.visual || (extensibility.visual = {}));
     })(extensibility = powerbi.extensibility || (powerbi.extensibility = {}));
 })(powerbi || (powerbi = {}));
@@ -613,8 +613,8 @@ var powerbi;
     (function (extensibility) {
         var visual;
         (function (visual) {
-            var barChart499A0A12A57F413881C384AA9A1840CB;
-            (function (barChart499A0A12A57F413881C384AA9A1840CB) {
+            var lineChartRD902E64560EE4B62A6FFD29B1499B69E;
+            (function (lineChartRD902E64560EE4B62A6FFD29B1499B69E) {
                 "use strict";
                 var DataViewObjectsParser = powerbi.extensibility.utils.dataview.DataViewObjectsParser;
                 var VisualSettings = (function (_super) {
@@ -624,22 +624,21 @@ var powerbi;
                         //public rcv_script: rcv_scriptSettings = new rcv_scriptSettings();
                         _this.ColourSettings = new ColourSettings();
                         _this.Legend = new Legend();
-                        _this.ZoomSlider = new ZoomSlider();
-                        _this.OutlierSettings = new OutlierSettings();
                         return _this;
                     }
                     return VisualSettings;
                 }(DataViewObjectsParser));
-                barChart499A0A12A57F413881C384AA9A1840CB.VisualSettings = VisualSettings;
+                lineChartRD902E64560EE4B62A6FFD29B1499B69E.VisualSettings = VisualSettings;
                 /*export class rcv_scriptSettings {
                  // undefined
                   public provider     // undefined
-                  public source
-                }*/
+                  public source     }*/
                 var ColourSettings = (function () {
                     function ColourSettings() {
-                        this.fill = "#FD625E";
+                        this.fill = "#01B8AA";
                         this.thresholdActive = false;
+                        this.linesActive = false;
+                        this.colour0 = "#FD625E";
                         this.threshold1 = 40;
                         this.colour1 = "#F2C80F";
                         this.threshold2 = 70;
@@ -647,29 +646,15 @@ var powerbi;
                     }
                     return ColourSettings;
                 }());
-                barChart499A0A12A57F413881C384AA9A1840CB.ColourSettings = ColourSettings;
+                lineChartRD902E64560EE4B62A6FFD29B1499B69E.ColourSettings = ColourSettings;
                 var Legend = (function () {
                     function Legend() {
                         this.legendActive = true;
                     }
                     return Legend;
                 }());
-                barChart499A0A12A57F413881C384AA9A1840CB.Legend = Legend;
-                var ZoomSlider = (function () {
-                    function ZoomSlider() {
-                        this.sliderActive = true;
-                    }
-                    return ZoomSlider;
-                }());
-                barChart499A0A12A57F413881C384AA9A1840CB.ZoomSlider = ZoomSlider;
-                var OutlierSettings = (function () {
-                    function OutlierSettings() {
-                        this.outlieractive = false;
-                    }
-                    return OutlierSettings;
-                }());
-                barChart499A0A12A57F413881C384AA9A1840CB.OutlierSettings = OutlierSettings;
-            })(barChart499A0A12A57F413881C384AA9A1840CB = visual.barChart499A0A12A57F413881C384AA9A1840CB || (visual.barChart499A0A12A57F413881C384AA9A1840CB = {}));
+                lineChartRD902E64560EE4B62A6FFD29B1499B69E.Legend = Legend;
+            })(lineChartRD902E64560EE4B62A6FFD29B1499B69E = visual.lineChartRD902E64560EE4B62A6FFD29B1499B69E || (visual.lineChartRD902E64560EE4B62A6FFD29B1499B69E = {}));
         })(visual = extensibility.visual || (extensibility.visual = {}));
     })(extensibility = powerbi.extensibility || (powerbi.extensibility = {}));
 })(powerbi || (powerbi = {}));
@@ -704,8 +689,8 @@ var powerbi;
     (function (extensibility) {
         var visual;
         (function (visual) {
-            var barChart499A0A12A57F413881C384AA9A1840CB;
-            (function (barChart499A0A12A57F413881C384AA9A1840CB) {
+            var lineChartRD902E64560EE4B62A6FFD29B1499B69E;
+            (function (lineChartRD902E64560EE4B62A6FFD29B1499B69E) {
                 "use strict";
                 // below is a snippet of a definition for an object which will contain the property values
                 // selected by the users
@@ -771,7 +756,7 @@ var powerbi;
                         // inject HTML from payload, created in R
                         // the code is injected to the 'head' and 'body' sections.
                         // if the visual was already rendered, the previous DOM elements are cleared
-                        barChart499A0A12A57F413881C384AA9A1840CB.ResetInjector();
+                        lineChartRD902E64560EE4B62A6FFD29B1499B69E.ResetInjector();
                         if (!payloadBase64) {
                             return;
                         }
@@ -793,7 +778,7 @@ var powerbi;
                             var headList = el.getElementsByTagName("head");
                             if (headList && headList.length > 0) {
                                 var head = headList[0];
-                                this.headNodes = barChart499A0A12A57F413881C384AA9A1840CB.ParseElement(head, document.head);
+                                this.headNodes = lineChartRD902E64560EE4B62A6FFD29B1499B69E.ParseElement(head, document.head);
                             }
                         }
                         // update 'body' nodes, under the rootElement
@@ -804,12 +789,12 @@ var powerbi;
                         var bodyList = el.getElementsByTagName("body");
                         if (bodyList && bodyList.length > 0) {
                             var body = bodyList[0];
-                            this.bodyNodes = barChart499A0A12A57F413881C384AA9A1840CB.ParseElement(body, this.rootElement);
+                            this.bodyNodes = lineChartRD902E64560EE4B62A6FFD29B1499B69E.ParseElement(body, this.rootElement);
                         }
-                        barChart499A0A12A57F413881C384AA9A1840CB.RunHTMLWidgetRenderer();
+                        lineChartRD902E64560EE4B62A6FFD29B1499B69E.RunHTMLWidgetRenderer();
                     };
                     Visual.parseSettings = function (dataView) {
-                        return barChart499A0A12A57F413881C384AA9A1840CB.VisualSettings.parse(dataView);
+                        return lineChartRD902E64560EE4B62A6FFD29B1499B69E.VisualSettings.parse(dataView);
                     };
                     /**
                      * This function gets called for each of the objects defined in the capabilities files and allows you to select which of the
@@ -817,12 +802,12 @@ var powerbi;
                      *
                      */
                     Visual.prototype.enumerateObjectInstances = function (options) {
-                        return barChart499A0A12A57F413881C384AA9A1840CB.VisualSettings.enumerateObjectInstances(this.settings || barChart499A0A12A57F413881C384AA9A1840CB.VisualSettings.getDefault(), options);
+                        return lineChartRD902E64560EE4B62A6FFD29B1499B69E.VisualSettings.enumerateObjectInstances(this.settings || lineChartRD902E64560EE4B62A6FFD29B1499B69E.VisualSettings.getDefault(), options);
                     };
                     return Visual;
                 }());
-                barChart499A0A12A57F413881C384AA9A1840CB.Visual = Visual;
-            })(barChart499A0A12A57F413881C384AA9A1840CB = visual.barChart499A0A12A57F413881C384AA9A1840CB || (visual.barChart499A0A12A57F413881C384AA9A1840CB = {}));
+                lineChartRD902E64560EE4B62A6FFD29B1499B69E.Visual = Visual;
+            })(lineChartRD902E64560EE4B62A6FFD29B1499B69E = visual.lineChartRD902E64560EE4B62A6FFD29B1499B69E || (visual.lineChartRD902E64560EE4B62A6FFD29B1499B69E = {}));
         })(visual = extensibility.visual || (extensibility.visual = {}));
     })(extensibility = powerbi.extensibility || (powerbi.extensibility = {}));
 })(powerbi || (powerbi = {}));
@@ -832,13 +817,13 @@ var powerbi;
     (function (visuals) {
         var plugins;
         (function (plugins) {
-            plugins.barChart499A0A12A57F413881C384AA9A1840CB = {
-                name: 'barChart499A0A12A57F413881C384AA9A1840CB',
-                displayName: 'BarChart',
+            plugins.lineChartRD902E64560EE4B62A6FFD29B1499B69E = {
+                name: 'lineChartRD902E64560EE4B62A6FFD29B1499B69E',
+                displayName: 'LineChartR',
                 class: 'Visual',
                 version: '1.0.0',
                 apiVersion: '1.11.0',
-                create: function (options) { return new powerbi.extensibility.visual.barChart499A0A12A57F413881C384AA9A1840CB.Visual(options); },
+                create: function (options) { return new powerbi.extensibility.visual.lineChartRD902E64560EE4B62A6FFD29B1499B69E.Visual(options); },
                 custom: true
             };
         })(plugins = visuals.plugins || (visuals.plugins = {}));

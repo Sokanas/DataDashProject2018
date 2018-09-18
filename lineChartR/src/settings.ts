@@ -29,39 +29,29 @@ module powerbi.extensibility.visual {
 
     import DataViewObjectsParser = powerbi.extensibility.utils.dataview.DataViewObjectsParser;
 
-    export class VisualSettings extends DataViewObjectsParser {
-        //public rcv_script: rcv_scriptSettings = new rcv_scriptSettings();
-        public ColourSettings: ColourSettings = new ColourSettings();
-        public Legend: Legend = new Legend();
-        public ZoomSlider: ZoomSlider = new ZoomSlider();
-        public OutlierSettings: OutlierSettings = new OutlierSettings();
-    }
-
+   export class VisualSettings extends DataViewObjectsParser {
+       //public rcv_script: rcv_scriptSettings = new rcv_scriptSettings();
+       public ColourSettings: ColourSettings = new ColourSettings();
+       public Legend: Legend = new Legend();
+       }
 
     /*export class rcv_scriptSettings {
      // undefined
       public provider     // undefined
-      public source
-    }*/
+      public source     }*/
+   export class ColourSettings {
+       public fill: string = "#01B8AA";
+       public thresholdActive: boolean = false;
+       public linesActive: boolean = false;
+       public colour0: string = "#FD625E";
+       public threshold1: number = 40;
+       public colour1: string = "#F2C80F";
+       public threshold2: number = 70;
+       public colour2: string = "#01B8AA";
+   }
 
-    export class ColourSettings {
-        public fill: string = "#FD625E";
-        public thresholdActive: boolean = false;
-        public threshold1: number = 40;
-        public colour1: string = "#F2C80F";
-        public threshold2: number = 70;
-        public colour2: string = "#01B8AA";
-    }
+   export class Legend {
+       public legendActive: boolean = true;
+   }
 
-    export class Legend {
-        public legendActive: boolean = true;
-    }
-
-    export class ZoomSlider {
-        public sliderActive: boolean = true;
-    }
-
-    export class OutlierSettings {
-        public outlieractive: boolean = false;
-    }
 }

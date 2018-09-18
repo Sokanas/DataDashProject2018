@@ -1,5 +1,4 @@
 {
-  "supportsHighlight": true,
   "dataRoles": [
     {
       "displayName": "Values",
@@ -81,38 +80,12 @@
         }
       }
     },
-    "ZoomSlider": {
-      "displayName": "Zooming Features",
-      "displayNameKey": "Visual_Zoom_Slider",
-      "properties": {
-        "sliderActive": {
-          "displayName": "Toggle Zoom Slider",
-          "displayNameKey": "Slider_Toggle",
-          "type": {
-            "bool": true
-          }
-        }
-      }
-    },
-    "OutlierSettings": {
-      "displayName": "Outlier Detection",
-      "displayNameKey": "Visual_Colours",
-      "properties": {
-        "outlieractive": {
-          "displayName": "Remove Outliers",
-          "displayNameKey": "Outlier_Detection_active",
-          "type": {
-            "bool": true
-          }
-        }
-      }
-    },
     "ColourSettings": {
       "displayName": "Colouring",
       "displayNameKey": "Visual_Colours",
       "properties": {
         "fill": {
-          "displayName": "Colour",
+          "displayName": "Line Colour",
           "displayNameKey": "Visual_Fill",
           "type": {
             "fill": {
@@ -129,6 +102,24 @@
             "bool": true
           }
         },
+        "linesActive": {
+          "displayName": "Toggle Threshold Lines",
+          "displayNameKey": "Threshold_Lines_Active",
+          "type": {
+            "bool": true
+          }
+        },
+        "colour0": {
+          "displayName": "Below Threshold Colour",
+          "displayNameKey": "Visual_Threshold_0_Colour",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
         "threshold1": {
           "displayName": "Threshold 1",
           "displayNameKey": "Visual_Threshold_1_Val",
@@ -137,7 +128,7 @@
           }
         },
         "colour1": {
-          "displayName": "Threshold 1 Colour",
+          "displayName": "Between Threshold Colour",
           "displayNameKey": "Visual_Threshold_1_Colour",
           "type": {
             "fill": {
@@ -155,8 +146,8 @@
           }
         },
         "colour2": {
-          "displayName": "Threshold 2 Colour",
-          "displayNameKey": "Visual_Threshold_2_Colour",
+          "displayName": "Above Threshold Colour",
+          "displayNameKey": "Visual__Threshold_2_Colour",
           "type": {
             "fill": {
               "solid": {

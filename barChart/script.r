@@ -16,6 +16,7 @@ columns = ncol(Values);
 baseColour = "#FD625E"
 thresholdActive = FALSE;
 legendActive = TRUE;
+sliderActive = TRUE;
 if(exists("ColourSettings_fill")){
 	baseColour = as.character(ColourSettings_fill);
 }
@@ -24,6 +25,9 @@ if(exists("ColourSettings_thresholdActive")){
 }
 if(exists("Legend_legendActive")){
 	legendActive = as.logical(Legend_legendActive);
+}
+if(exists("ZoomSlider_sliderActive")){
+	sliderActive = as.logical(ZoomSlider_sliderActive);
 }
 
 #If Threshold Colouring is active
@@ -52,11 +56,20 @@ if(thresholdActive){
 	}
 	
 	thresholds <- c(-Inf, threshold1Value, threshold2Value, Inf);
-	p <- plot_ly(
-			marker = list(color = colours), #Initial creation of the graph object
-	)%>%
-    rangeslider(dataFrame$x[10], dataFrame$x[100000]) #Adding the zoom slider along the bottom
-	for(cols in 1:ncol(Values)){ #Iterate through number of data series' in the Values field, creating a clustered bar chart if there's more than one
+	#Initial creation of the graph object
+	if(sliderActive){
+		p <- plot_ly(
+			marker = list(color = colours),
+		)%>%
+		rangeslider(dataFrame$x[10], dataFrame$x[100000])
+	}else{
+		p <- plot_ly(
+			marker = list(color = colours),
+		)
+	}
+
+	#Iterate through number of data series' in the Values field, creating a clustered bar chart if there's more than one
+	for(cols in 1:ncol(Values)){ 
 		#Check if outlier detection is active, and alters values if true
 		if(exists("OutlierSettings_outlieractive")){
 			outlieractive = as.logical(OutlierSettings_outlieractive);
@@ -82,6 +95,7 @@ if(thresholdActive){
 				}
 			}
 		}
+
 		#Maths on the colours provided above to differentiate between bars in the graph
 		rgbvals = col2rgb(baseColour);
 		rgbvals[1] = max(0, rgbvals[1] - (15 * (cols-1)));
@@ -99,6 +113,7 @@ if(thresholdActive){
 		rgbvals[3] = max(0, rgbvals[3] - (15 * (cols-1)));
 		threshold2Colour = rgb(rgbvals[1], rgbvals[2], rgbvals[3], maxColorValue = 255);
 		colours <- c(baseColour,threshold1Colour,threshold2Colour)[findInterval(Values[[cols]], vec=thresholds)]
+
 		#Add data to the graph object, removing outliers if applicable
 		if(outlieractive){
 			p <- add_bars(p,
@@ -138,10 +153,18 @@ if(thresholdActive){
 		}
 	}
 }else{ #If Threshold Colouring is not active, does not need to check for the existence of those parameters or add them to the graph
-	p <- plot_ly(
-			marker = list(color = baseColour),
-	)%>%
-    rangeslider(dataFrame$x[10], dataFrame$x[100000])
+	#Initial creation of the graph object
+	if(sliderActive){
+		p <- plot_ly(
+			marker = list(color = colours),
+		)%>%
+		rangeslider(dataFrame$x[10], dataFrame$x[100000])
+	}else{
+		p <- plot_ly(
+			marker = list(color = colours),
+		)
+	}
+
 	for(cols in 1:ncol(Values)){
 		if(exists("OutlierSettings_outlieractive")){
 			outlieractive = as.logical(OutlierSettings_outlieractive);
@@ -167,11 +190,13 @@ if(thresholdActive){
 				}
 			}
 		}
+
 		rgbvals = col2rgb(baseColour);
 		rgbvals[1] = max(0, rgbvals[1] - (15 * (cols-1)));
 		rgbvals[2] = max(0, rgbvals[2] - (15 * (cols-1)));
 		rgbvals[3] = max(0, rgbvals[3] - (15 * (cols-1)));
 		baseColour = rgb(rgbvals[1], rgbvals[2], rgbvals[3], maxColorValue = 255);
+
 		if(outlieractive){
 			p <- add_bars(p,
 				x=dataFrame[[1]],
