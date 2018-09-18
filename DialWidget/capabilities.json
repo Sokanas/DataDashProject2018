@@ -29,7 +29,7 @@
         }
     ],
     "objects": {
-        "labels": {
+        "LabelSettings": {
             "displayName": "Labels",
             "displayNameKey": "labels",
             "properties": {
@@ -60,7 +60,7 @@
                 }
             }
         },
-        "target": {
+        "TargetSettings": {
             "displayName": "Target",
             "displayNameKey": "target",
             "properties": {
@@ -105,7 +105,7 @@
                 }
             }
         },
-        "dial": {
+        "DialSettings": {
             "displayName": "Dial",
             "displayNameKey": "dial",
             "properties": {
@@ -150,7 +150,7 @@
                 }
             }
         },
-        "bandOne": {
+        "BandOneSettings": {
             "displayName": "Band One",
             "displayNameKey": "bandOne",
             "properties": {
@@ -188,7 +188,7 @@
                 }
             }
         },
-        "bandTwo": {
+        "BandTwoSettings": {
             "displayName": "Band Two",
             "displayNameKey": "bandTwo",
             "properties": {
@@ -226,7 +226,7 @@
                 }
             }
         },
-        "bandThree": {
+        "BandThreeSettings": {
             "displayName": "Band Three",
             "displayNameKey": "bandThree",
             "properties": {
@@ -264,7 +264,7 @@
                 }
             }
         },
-        "bandFour": {
+        "BandFourSettings": {
             "displayName": "Band Four",
             "displayNameKey": "bandFour",
             "properties": {
@@ -302,7 +302,7 @@
                 }
             }
         },
-        "bandFive": {
+        "BandFiveSettings": {
             "displayName": "Band Five",
             "displayNameKey": "bandFive",
             "properties": {

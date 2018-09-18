@@ -1,19 +1,7 @@
 module powerbi.extensibility.visual {
     // powerbi.visuals
     import ISelectionId = powerbi.visuals.ISelectionId;
-
-    /**
-     * Interface for DialCharts viewmodel.
-     *
-     * @interface
-     * @property {DialChartDataPoint[]} dataPoints - Set of data points the visual will render.
-     * @property {number} dataMax                 - Maximum data value in the set of data points.
-     */
-    interface DialChartViewModel {
-        measure: number;    //Change to Multiple for Multiple Needles if implemented
-        settings: DialChartSettings;
-    };
-
+    
     /**
      * Interface for BarChart data points.
      *
@@ -29,266 +17,15 @@ module powerbi.extensibility.visual {
         selectionId: ISelectionId;
     };
 
-    /**
-     * Interface for BarChart settings.
-     *
-     * @interface
-     * @property {{show:boolean}} enableAxis - Object property that allows axis to be enabled.
-     * @property {{generalView.opacity:number}} Bars Opacity - Controls opacity of plotted bars, values range between 10 (almost transparent) to 100 (fully opaque, default)
-     * @property {{generalView.showHelpLink:boolean}} Show Help Button - When TRUE, the plot displays a button which launch a link to documentation.
-     */
-    interface DialChartSettings {
-        labels: {
-            labelSize: number;
-            labelColor: string;
-            showMinMax: boolean;
-        };
-
-        target: {
-            targetTextSize: number;
-            targetColor: string;
-            showTarget: boolean;
-            targetLineSize: number;
-            targetValue: number;
-        };
-
-        dial: {
-            dialValueSize: number;
-            dialColor: string;
-            dialSize: number;
-        };
-
-        bandOne: {
-            showBand: boolean;
-            bandColor: string;
-            bandStart: number;
-            bandEnd: number;
-        };
-
-        bandTwo: {
-            showBand: boolean;
-            bandColor: string;
-            bandStart: number;
-            bandEnd: number;
-        };
-
-        bandThree: {
-            showBand: boolean;
-            bandColor: string;
-            bandStart: number;
-            bandEnd: number;
-        };
-
-        bandFour: {
-            showBand: boolean;
-            bandColor: string;
-            bandStart: number;
-            bandEnd: number;
-        };
-
-        bandFive: {
-            showBand: boolean;
-            bandColor: string;
-            bandStart: number;
-            bandEnd: number;
-        };
-    }
-
-    /**
-     * Function that converts queried data into a view model that will be used by the visual.
-     *
-     * @function
-     * @param {VisualUpdateOptions} options - Contains references to the size of the container
-     *                                        and the dataView which contains all the data
-     *                                        the visual had queried.
-     * @param {IVisualHost} host            - Contains references to the host which contains services
-     */
-    function visualTransform(options: VisualUpdateOptions, host: IVisualHost): DialChartViewModel {
-        let dataViews = options.dataViews[0];
-        let defaultSettings: DialChartSettings = {
-            labels: {
-                labelSize: 10,
-                labelColor: "black",
-                showMinMax: true
-            },
-            target: {
-                targetTextSize: 10,
-                targetColor: "red",
-                targetLineSize: 5,
-                targetValue: 0,
-                showTarget: false
-            },
-            dial: {
-                dialValueSize: 10,
-                dialColor: "orange",
-                dialSize: 4
-            },
-            bandOne: {
-                showBand: true,
-                bandStart: 0,
-                bandEnd: 20,
-                bandColor: "red"
-            },
-            bandTwo: {
-                showBand: true,
-                bandStart: 20,
-                bandEnd: 80,
-                bandColor: "yellow"
-            },
-            bandThree: {
-                showBand: true,
-                bandStart: 80,
-                bandEnd: 100,
-                bandColor: "green"
-            },
-            bandFour: {
-                showBand: false,
-                bandStart: 0,
-                bandEnd: 0,
-                bandColor: "white"
-            },
-            bandFive: {
-                showBand: false,
-                bandStart: 0,
-                bandEnd: 0,
-                bandColor: "white"
-            }
-        };
-
-        let viewModel: DialChartViewModel = {
-            measure: 0,
-            settings: <DialChartSettings>{}
-        };
-
-        let dialChartSettings: DialChartSettings = {
-            labels: {
-                labelSize: 10,
-                labelColor: "black",
-                showMinMax: true
-            },
-            target: {
-                targetTextSize: 10,
-                targetLineSize: 4,
-                targetColor: "red",
-                showTarget: false,
-                targetValue: 0
-            },
-            dial: {
-                dialValueSize: 10,
-                dialColor: "orange",
-                dialSize: 4
-            },
-            bandOne: {
-                showBand: true,
-                bandStart: 0,
-                bandEnd: 20,
-                bandColor: "red"
-            },
-            bandTwo: {
-                showBand: true,
-                bandStart: 20,
-                bandEnd: 80,
-                bandColor: "yellow"
-            },
-            bandThree: {
-                showBand: true,
-                bandStart: 80,
-                bandEnd: 100,
-                bandColor: "green"
-            },
-            bandFour: {
-                showBand: false,
-                bandStart: 0,
-                bandEnd: 0,
-                bandColor: "white"
-            },
-            bandFive: {
-                showBand: false,
-                bandStart: 0,
-                bandEnd: 0,
-                bandColor: "white"
-            }
-        };
-
-        let dv = options.dataViews[0];
-        //DialChart.e.innerHTML += "<br/>dc vm dataView ok";
-
-        let val = dv.single.value;
-        //DialChart.e.innerHTML += "<br/>dc vm single retrieved";
-
-        //DialChart.e.innerHTML += "<br/>default value: " + (dv.single.value as number);
-        //DialChart.e.innerHTML += "<br/>dc vm ok";
-        return {
-            measure: (dv.single.value as number),
-            settings: dialChartSettings
-        };
-    }
-
-    function getColumnColorByIndex(
-        category: DataViewCategoryColumn,
-        index: number,
-        colorPalette: ISandboxExtendedColorPalette,
-    ): string {
-        if (colorPalette.isHighContrast) {
-            return colorPalette.background.value;
-        }
-
-        const defaultColor: Fill = {
-            solid: {
-                color: colorPalette.getColor(`${category.values[index]}`).value,
-            }
-        };
-
-        return getCategoricalObjectValue<Fill>(
-            category,
-            index,
-            'colorSelector',
-            'fill',
-            defaultColor
-        ).solid.color;
-    }
-
-    function getColumnStrokeColor(colorPalette: ISandboxExtendedColorPalette): string {
-        return colorPalette.isHighContrast
-            ? colorPalette.foreground.value
-            : null;
-    }
-
-    function getColumnStrokeWidth(isHighContrast: boolean): number {
-        return isHighContrast
-            ? 2
-            : 0;
-    }
-
-    function getAxisTextFillColor(
-        objects: DataViewObjects,
-        colorPalette: ISandboxExtendedColorPalette,
-        defaultColor: string
-    ): string {
-        if (colorPalette.isHighContrast) {
-            return colorPalette.foreground.value;
-        }
-
-        return getValue<Fill>(
-            objects,
-            "enableAxis",
-            "fill",
-            {
-                solid: {
-                    color: defaultColor,
-                }
-            },
-        ).solid.color;
-    }
-
     export class DialChart implements IVisual {
+        debugger;
+
+
         private svg: d3.Selection<SVGElement>;
         private host: IVisualHost;
         private selectionManager: ISelectionManager;
         private dialContainer: d3.Selection<SVGElement>;
-        private xAxis: d3.Selection<SVGElement>;
-        private dialDataPoints: DialChartDataPoint;
-        private dialChartSettings: DialChartSettings;
+        private data: DialViewModel;
         private locale: string;
         private innerRadius: number;
         private outerRadius: number;
@@ -332,6 +69,12 @@ module powerbi.extensibility.visual {
             },
             xAxisFontMultiplier: 0.04,
         };
+
+
+        private getSettings(): DialChartSettings {
+            return this.data && this.data.settings;
+        }
+
 
         /**
          * Creates instance of BarChart. This method is only called once.
@@ -382,7 +125,7 @@ module powerbi.extensibility.visual {
 
             this.Value = 66;    //Pull this from bound data!!!
             this.Target = 80;
-            //DialChart.e.innerHTML = "ctor ok";
+            //    DialChart.e.innerHTML = "ctor ok";
         }
 
 
@@ -397,17 +140,12 @@ module powerbi.extensibility.visual {
          *                                        the visual had queried.
          */
         public update(options: VisualUpdateOptions) {
-            //DialChart.e.innerHTML = "<br/>update start";
-            /*this.clear();
-            this.dialContainer = this.svg
-                .append('g')
-                .classed(this.dialContainerClass, true);
-            */
-            // DialChart.e.innerHTML += "UPDATE";
-            let viewModel: DialChartViewModel = visualTransform(options, this.host);
+
+            let viewModel: DialViewModel = this.visualTransform(options, this.host);
             //DialChart.e.innerHTML += "<br/>viewmodel ok";
-            let settings = this.dialChartSettings = viewModel.settings;
+            this.data = viewModel;
             this.Value = viewModel.measure;
+
             //this.Value = this.dialDataPoints.value;
 
             let width = options.viewport.width;
@@ -428,39 +166,39 @@ module powerbi.extensibility.visual {
             //DialChart.e.innerHTML += "<br/>background arc";
 
             //2.    Draw the Coloured Bands (1,2,3)
-            if (this.dialChartSettings.bandOne.showBand == true) {
-                this.drawColouredArc("bandOne",
-                    this.dialChartSettings.bandOne.bandColor,
-                    this.dialChartSettings.bandOne.bandStart,
-                    this.dialChartSettings.bandOne.bandEnd);
-                //        DialChart.e.innerHTML += "<br/>band 1 ok";
+            if (this.data.settings.BandOneSettings.showBand == true) {
+                this.drawColouredArc("BandOneSettings",
+                    this.data.settings.BandOneSettings.bandColor,
+                    this.data.settings.BandOneSettings.bandStart,
+                    this.data.settings.BandOneSettings.bandEnd);
+                //            DialChart.e.innerHTML += "<br/>band 1 ok";
             }
-            if (this.dialChartSettings.bandTwo.showBand == true) {
-                this.drawColouredArc("bandTwo",
-                    this.dialChartSettings.bandTwo.bandColor,
-                    this.dialChartSettings.bandTwo.bandStart,
-                    this.dialChartSettings.bandTwo.bandEnd);
+            if (this.data.settings.BandTwoSettings.showBand == true) {
+                this.drawColouredArc("BandTwoSettings",
+                    this.data.settings.BandTwoSettings.bandColor,
+                    this.data.settings.BandTwoSettings.bandStart,
+                    this.data.settings.BandTwoSettings.bandEnd);
                 //        DialChart.e.innerHTML += "<br/>band 2 ok";
             }
-            if (this.dialChartSettings.bandThree.showBand == true) {
-                this.drawColouredArc("bandThree",
-                    this.dialChartSettings.bandThree.bandColor,
-                    this.dialChartSettings.bandThree.bandStart,
-                    this.dialChartSettings.bandThree.bandEnd);
+            if (this.data.settings.BandThreeSettings.showBand == true) {
+                this.drawColouredArc("BandThreeSettings",
+                    this.data.settings.BandThreeSettings.bandColor,
+                    this.data.settings.BandThreeSettings.bandStart,
+                    this.data.settings.BandThreeSettings.bandEnd);
                 //       DialChart.e.innerHTML += "<br/>band 3 ok";
             }
-            if (this.dialChartSettings.bandFour.showBand == true) {
-                this.drawColouredArc("bandFour",
-                    this.dialChartSettings.bandFour.bandColor,
-                    this.dialChartSettings.bandFour.bandStart,
-                    this.dialChartSettings.bandFour.bandEnd);
+            if (this.data.settings.BandFourSettings.showBand == true) {
+                this.drawColouredArc("BandFourSettings",
+                    this.data.settings.BandFourSettings.bandColor,
+                    this.data.settings.BandFourSettings.bandStart,
+                    this.data.settings.BandFourSettings.bandEnd);
                 //        DialChart.e.innerHTML += "<br/>band 4 ok";
             }
-            if (this.dialChartSettings.bandFive.showBand == true) {
-                this.drawColouredArc("bandFive",
-                    this.dialChartSettings.bandFive.bandColor,
-                    this.dialChartSettings.bandFive.bandStart,
-                    this.dialChartSettings.bandFive.bandEnd);
+            if (this.data.settings.BandFiveSettings.showBand == true) {
+                this.drawColouredArc("BandFiveSettings",
+                    this.data.settings.BandFiveSettings.bandColor,
+                    this.data.settings.BandFiveSettings.bandStart,
+                    this.data.settings.BandFiveSettings.bandEnd);
                 //        DialChart.e.innerHTML += "<br/>band 5 ok";
             }
 
@@ -469,25 +207,25 @@ module powerbi.extensibility.visual {
             //3.B.  Minor Tick Marks
 
             //4. Draw the 'Needle'
-            this.drawValueNeedle(this.Value, this.dialChartSettings.dial.dialColor,
-                this.dialChartSettings.dial.dialSize,
+            this.drawValueNeedle(this.Value, this.data.settings.DialSettings.dialColor,
+                this.data.settings.DialSettings.dialSize,
                 this.dialNeedleClass, 20);
             //
             //  Any Other needles would go here - or a function that could push them into here
             //
-            this.drawValueNeedleNodule(this.dialChartSettings.dial.dialColor, this.dialNeedleClass + "Hub");
+            this.drawValueNeedleNodule(this.data.settings.DialSettings.dialColor, this.dialNeedleClass + "Hub");
             //DialChart.e.innerHTML += "<br/>needle ok";
 
             //5. Draw Labels
-            if (this.dialChartSettings.target.showTarget == true) {
-                this.drawTargetTick(this.dialChartSettings.target.targetColor,
+            if (this.data.settings.TargetSettings.showTarget == true) {
+                this.drawTargetTick(this.data.settings.TargetSettings.targetColor,
                     this.Target,
                     8);
                 //       DialChart.e.innerHTML += "<br/>draw target line";
                 this.drawTargetLabel(this.Target);
             }
 
-            if (this.dialChartSettings.labels.showMinMax == true) {
+            if (this.data.settings.LabelSettings.showMinMax == true) {
                 //    DialChart.e.innerHTML += "<br/>draw minmax";
                 this.drawMinMaxLabel();
             }
@@ -573,7 +311,14 @@ module powerbi.extensibility.visual {
             x1 = 250; y1 = 250;
         }
 
-
+/**
+ * 
+ * @param color 
+ * @param length 
+ * @param num 
+ * @param start 
+ * @param end 
+ */
         private drawMinorTicks(color: string, length: number, num: number, start: number, end: number) {
             var cscale = d3.scale.linear().domain([this.minValue, this.maxValue]).range([-120 * (Math.PI / 180), 120 * (Math.PI / 180)]);
             var x1, x2, y1, y2;
@@ -724,6 +469,9 @@ module powerbi.extensibility.visual {
 
         }
 
+        /**
+         * 
+         */
         private drawMinMaxLabel() {
             var x1 = 79;
             var x2 = 392;
@@ -746,6 +494,9 @@ module powerbi.extensibility.visual {
                 .text(this.maxValue);
         }
 
+        /**
+         * 
+         */
         private drawValueLabel() {
             var x = 236;    //Middle X Pos
             var y = 300;    // Want it below the needle, but not by like heaps
@@ -760,7 +511,11 @@ module powerbi.extensibility.visual {
         }
 
 
-
+/**
+ * 
+ * @param selection 
+ * @param selectionIds 
+ */
         private syncSelectionState(
             selection: d3.Selection<DialChartDataPoint>,
             selectionIds: ISelectionId[]
@@ -794,6 +549,11 @@ module powerbi.extensibility.visual {
             });
         }
 
+        /**
+         * 
+         * @param selectionIds 
+         * @param selectionId 
+         */
         private isSelectionIdInArray(selectionIds: ISelectionId[], selectionId: ISelectionId): boolean {
             if (!selectionIds || !selectionId) {
                 return false;
@@ -811,107 +571,14 @@ module powerbi.extensibility.visual {
          * @param {EnumerateVisualObjectInstancesOptions} options - Map of defined objects
          */
         public enumerateObjectInstances(options: EnumerateVisualObjectInstancesOptions): VisualObjectInstanceEnumeration {
-            let objectName = options.objectName;
-            let objectEnumeration: VisualObjectInstance[] = [];
+            return DialChartSettings.enumerateObjectInstances(this.data.settings, options);
 
-            switch (objectName) {
-                case 'labels':
-                    objectEnumeration.push({
-                        objectName: objectName,
-                        properties: {
-                            showMinMax: this.dialChartSettings.labels.showMinMax,
-                            labelSize: this.dialChartSettings.labels.labelSize,
-                            labelColor: this.dialChartSettings.labels.labelColor
-                        },
-                        selector: null
-                    });
-                    break;
-                case 'target':
-                    objectEnumeration.push({
-                        objectName: objectName,
-                        properties: {
-                            targetTextSize: this.dialChartSettings.target.targetTextSize,
-                            targetColor: this.dialChartSettings.target.targetColor,
-                            showTarget: this.dialChartSettings.target.showTarget,
-                            targetLineSize: this.dialChartSettings.target.targetLineSize
-                        },
-                        selector: null
-                    });
-                    break;
-                case 'dial':
-                    objectEnumeration.push({
-                        objectName: objectName,
-                        properties: {
-                            dialValueSize: this.dialChartSettings.dial.dialValueSize,
-                            dialColor: this.dialChartSettings.dial.dialColor,
-                            dialSize: this.dialChartSettings.dial.dialSize
-                        },
-                        selector: null
-                    });
-                    break;
-                case 'bandOne':
-                    objectEnumeration.push({
-                        objectName: objectName,
-                        properties: {
-                            showBand: this.dialChartSettings.bandOne.showBand,
-                            bandColor: this.dialChartSettings.bandOne.bandColor,
-                            bandStart: this.dialChartSettings.bandOne.bandStart,
-                            bandEnd: this.dialChartSettings.bandOne.bandEnd
-                        },
-                        selector: null
-                    });
-                    break;
-                case 'bandTwo':
-                    objectEnumeration.push({
-                        objectName: objectName,
-                        properties: {
-                            showBand: this.dialChartSettings.bandTwo.showBand,
-                            bandColor: this.dialChartSettings.bandTwo.bandColor,
-                            bandStart: this.dialChartSettings.bandTwo.bandStart,
-                            bandEnd: this.dialChartSettings.bandTwo.bandEnd
-                        },
-                        selector: null
-                    });
-                    break;
-                case 'bandThree':
-                    objectEnumeration.push({
-                        objectName: objectName,
-                        properties: {
-                            showBand: this.dialChartSettings.bandThree.showBand,
-                            bandColor: this.dialChartSettings.bandThree.bandColor,
-                            bandStart: this.dialChartSettings.bandThree.bandStart,
-                            bandEnd: this.dialChartSettings.bandThree.bandEnd
-                        },
-                        selector: null
-                    });
-                    break;
-                case 'bandFour':
-                    objectEnumeration.push({
-                        objectName: objectName,
-                        properties: {
-                            showBand: this.dialChartSettings.bandFour.showBand,
-                            bandColor: this.dialChartSettings.bandFour.bandColor,
-                            bandStart: this.dialChartSettings.bandFour.bandStart,
-                            bandEnd: this.dialChartSettings.bandFour.bandEnd
-                        },
-                        selector: null
-                    });
-                    break;
-                case 'bandFive':
-                    objectEnumeration.push({
-                        objectName: objectName,
-                        properties: {
-                            showBand: this.dialChartSettings.bandFive.showBand,
-                            bandColor: this.dialChartSettings.bandFive.bandColor,
-                            bandStart: this.dialChartSettings.bandFive.bandStart,
-                            bandEnd: this.dialChartSettings.bandFive.bandEnd
-                        },
-                        selector: null
-                    });
-                    break;
-            };
+        }
 
-            return objectEnumeration;
+
+        private parseSettings(dataView: DataView): DialChartSettings {
+            let settings: DialChartSettings = DialChartSettings.parse<DialChartSettings>(dataView);
+            return settings;
         }
 
         /**
@@ -922,6 +589,106 @@ module powerbi.extensibility.visual {
          */
         public destroy(): void {
             // Perform any cleanup tasks here
+            this.svg = null;
+        }
+
+        /**
+     * Function that converts queried data into a view model that will be used by the visual.
+     *
+     * @function
+     * @param {VisualUpdateOptions} options - Contains references to the size of the container
+     *                                        and the dataView which contains all the data
+     *                                        the visual had queried.
+     * @param {IVisualHost} host            - Contains references to the host which contains services
+     */
+        private visualTransform(options: VisualUpdateOptions, host: IVisualHost): DialViewModel {
+            //DialChart.e.innerHTML = "<br/>visual transform start";
+            let dataViews = options.dataViews[0];
+            let defaultSettings: DialChartSettings = new DialChartSettings();
+
+            let viewModel: DialViewModel = {
+                measure: 0,
+                settings: defaultSettings
+            };
+
+            let dv = options.dataViews[0];
+            viewModel.measure = dv.single.value as number;
+
+            if (this.data === null) {
+                return viewModel;
+            } else {
+                try {
+                    let objects = options.dataViews[0].metadata.objects;
+                //    DialChart.e.innerHTML += "<br/>vs: getValue<> ...";
+
+                    var settings: DialChartSettings = new DialChartSettings();
+                    settings.LabelSettings = {
+                        labelSize: getValue<number>(objects, 'LabelSettings', 'labelSize', defaultSettings.LabelSettings.labelSize),
+                        labelColor: getValue<string>(objects, 'LabelSettings', 'labelColor', defaultSettings.LabelSettings.labelColor),
+                        showMinMax: getValue<boolean>(objects, 'LabelSettings', 'showMinMax', defaultSettings.LabelSettings.showMinMax)
+                    };
+                //    DialChart.e.innerHTML += "<br/>vs: getValue<> ...";
+                    settings.TargetSettings = {
+                        targetTextSize: getValue<number>(objects, 'TargetSettings', 'targetTextSize', defaultSettings.TargetSettings.targetTextSize),
+                        targetColor: getValue<string>(objects, 'TargetSettings', 'targetColor', defaultSettings.TargetSettings.targetColor),
+                        showTarget: getValue<boolean>(objects, 'TargetSettings', 'showTarget', defaultSettings.TargetSettings.showTarget),
+                        targetLineSize: getValue<number>(objects, 'TargetSettings', 'targetLineSize', defaultSettings.TargetSettings.targetLineSize),
+                        targetValue: getValue<number>(objects, 'TargetSettings', 'targetValue', defaultSettings.TargetSettings.targetValue)
+                    };
+                //    DialChart.e.innerHTML += "<br/>vs: getValue<> ...";
+                    settings.DialSettings = {
+                        dialValueSize: getValue<number>(objects, 'DialSettings', 'dialValueSize', defaultSettings.DialSettings.dialValueSize),
+                        dialColor: getValue<string>(objects, 'DialSettings', 'dialColor', defaultSettings.DialSettings.dialColor),
+                        dialSize: getValue<number>(objects, 'DialSettings', 'dialSize', defaultSettings.DialSettings.dialSize),
+                        minimumValue: getValue<number>(objects, 'DialSettings', 'minimumValue', defaultSettings.DialSettings.minimumValue),
+                        maximumValue: getValue<number>(objects, 'DialSettings', 'maximumValue', defaultSettings.DialSettings.maximumValue)
+                    };
+                    settings.BandOneSettings = {
+                        showBand: getValue<boolean>(objects, 'BandOneSettings', 'showBand', defaultSettings.BandOneSettings.showBand),
+                        bandStart: getValue<number>(objects, 'BandOneSettings', 'bandStart', defaultSettings.BandOneSettings.bandStart),
+                        bandEnd: getValue<number>(objects, 'BandOneSettings', 'bandEnd', defaultSettings.BandOneSettings.bandEnd),
+                        bandColor: getValue<string>(objects, 'BandOneSettings', 'bandColor', defaultSettings.BandOneSettings.bandColor)
+                    };
+                //    DialChart.e.innerHTML += "<br/>vs: getValue<> ...";
+                    settings.BandTwoSettings = {
+                        showBand: getValue<boolean>(objects, 'BandTwoSettings', 'showBand', defaultSettings.BandTwoSettings.showBand),
+                        bandStart: getValue<number>(objects, 'BandTwoSettings', 'bandStart', defaultSettings.BandTwoSettings.bandStart),
+                        bandEnd: getValue<number>(objects, 'BandTwoSettings', 'bandEnd', defaultSettings.BandTwoSettings.bandEnd),
+                        bandColor: getValue<string>(objects, 'BandTwoSettings', 'bandColor', defaultSettings.BandTwoSettings.bandColor)
+                    };
+                //    DialChart.e.innerHTML += "<br/>vs: getValue<> ...";
+                    settings.BandThreeSettings = {
+                        showBand: getValue<boolean>(objects, 'BandThreeSettings', 'showBand', defaultSettings.BandThreeSettings.showBand),
+                        bandStart: getValue<number>(objects, 'BandThreeSettings', 'bandStart', defaultSettings.BandThreeSettings.bandStart),
+                        bandEnd: getValue<number>(objects, 'BandThreeSettings', 'bandEnd', defaultSettings.BandThreeSettings.bandEnd),
+                        bandColor: getValue<string>(objects, 'BandThreeSettings', 'bandColor', defaultSettings.BandThreeSettings.bandColor)
+                    };
+                    settings.BandFourSettings = {
+                        showBand: getValue<boolean>(objects, 'BandFourSettings', 'showBand', defaultSettings.BandFourSettings.showBand),
+                        bandStart: getValue<number>(objects, 'BandFourSettings', 'bandStart', defaultSettings.BandFourSettings.bandStart),
+                        bandEnd: getValue<number>(objects, 'BandFourSettings', 'bandEnd', defaultSettings.BandFourSettings.bandEnd),
+                        bandColor: getValue<string>(objects, 'BandFourSettings', 'bandColor', defaultSettings.BandFourSettings.bandColor)
+                    };
+                    settings.BandFiveSettings = {
+                        showBand: getValue<boolean>(objects, 'BandFiveSettings', 'showBand', defaultSettings.BandFiveSettings.showBand),
+                        bandStart: getValue<number>(objects, 'BandFiveSettings', 'bandStart', defaultSettings.BandFiveSettings.bandStart),
+                        bandEnd: getValue<number>(objects, 'BandFiveSettings', 'bandEnd', defaultSettings.BandFiveSettings.bandEnd),
+                        bandColor: getValue<string>(objects, 'BandFiveSettings', 'bandColor', defaultSettings.BandFiveSettings.bandColor)
+                    };
+
+                //    DialChart.e.innerHTML += "<br/>vs: parseSettings";
+
+                    viewModel.settings = settings;
+
+                    viewModel.settings = this.parseSettings(dataViews[0]);
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+
+
+        //    DialChart.e.innerHTML += "<br/>vs end";
+            return viewModel;
         }
     }
 }
