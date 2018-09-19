@@ -32,7 +32,8 @@ module powerbi.extensibility.visual.barChart499A0A12A57F413881C384AA9A1840CB  {
     export class VisualSettings extends DataViewObjectsParser {
         //public rcv_script: rcv_scriptSettings = new rcv_scriptSettings();
         public ColourSettings: ColourSettings = new ColourSettings();
-        public Legend: Legend = new Legend()
+        public Legend: Legend = new Legend();
+        public ZoomSlider: ZoomSlider = new ZoomSlider();
         public OutlierSettings: OutlierSettings = new OutlierSettings();
     }
 
@@ -54,6 +55,10 @@ module powerbi.extensibility.visual.barChart499A0A12A57F413881C384AA9A1840CB  {
 
     export class Legend {
         public legendActive: boolean = true;
+    }
+
+    export class ZoomSlider {
+        public sliderActive: boolean = true;
     }
 
     export class OutlierSettings {

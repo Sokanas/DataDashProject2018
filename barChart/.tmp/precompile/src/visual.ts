@@ -46,28 +46,19 @@ module powerbi.extensibility.visual.barChart499A0A12A57F413881C384AA9A1840CB  {
 
     // in order to improve the performance, one can update the <head> only in the initial rendering.
     // set to 'true' if you are using different packages to create the widgets
-
-    //TODO: Added DataViewObjectsModule
-    //import DataViewObjectsModule = powerbi.extensibility.utils.dataview.DataViewObject;
+    
     const updateHTMLHead: boolean = false;
     const renderVisualUpdateType: number[] = [
         VisualUpdateType.Resize,
         VisualUpdateType.ResizeEnd,
         VisualUpdateType.Resize + VisualUpdateType.ResizeEnd
     ];
-    //TODO: Added
-    /*interface VisualSettingsBarParams {
-        fill: string;
-        threshold1: number;
-    }*/
     
     export class Visual implements IVisual {
         private rootElement: HTMLElement;
         private headNodes: Node[];
         private bodyNodes: Node[];
         private settings: VisualSettings;
-        //TODO: Added
-        //private settings_bar: VisualSettingsBarParams;
 
         public constructor(options: VisualConstructorOptions) {
             if (options && options.element) {
@@ -75,11 +66,6 @@ module powerbi.extensibility.visual.barChart499A0A12A57F413881C384AA9A1840CB  {
             }
             this.headNodes = [];
             this.bodyNodes = [];
-            //TODO: added
-            /*this.settings_bar = <VisualSettingsBarParams>{
-                fill: "rgb(255,0,0)",
-                threshold1: 60
-            };*/
         }
 
         public update(options: VisualUpdateOptions): void {
@@ -94,8 +80,6 @@ module powerbi.extensibility.visual.barChart499A0A12A57F413881C384AA9A1840CB  {
             }
             const dataView: DataView = options.dataViews[0];
             this.settings = Visual.parseSettings(dataView);
-            //TODO: Added this function call
-            //this.updateObjects(dataView.metadata.objects);
 
             let payloadBase64: string = null;
             if (dataView.scriptResult && dataView.scriptResult.payloadBase64) {
@@ -165,14 +149,7 @@ module powerbi.extensibility.visual.barChart499A0A12A57F413881C384AA9A1840CB  {
         private static parseSettings(dataView: DataView): VisualSettings {
             return VisualSettings.parse(dataView) as VisualSettings;
         }
-
-        //TODO: Added this function
-        /*public updateObjects(objects: DataViewObjects) {
-            this.settings_bar = <VisualSettingsBarParams>{
-                fill: DataViewObjectsModule.getValue<string>(objects, 'fill', 'rgb(0,255,0)'),
-                threshold1: DataViewObjectsModule.getValue<number>(objects, 'threshold1', 35)
-            };
-        }*/
+        
         /** 
          * This function gets called for each of the objects defined in the capabilities files and allows you to select which of the 
          * objects and properties you want to expose to the users in the property pane.
@@ -180,26 +157,6 @@ module powerbi.extensibility.visual.barChart499A0A12A57F413881C384AA9A1840CB  {
          */
         public enumerateObjectInstances(options: EnumerateVisualObjectInstancesOptions):
             VisualObjectInstance[] | VisualObjectInstanceEnumerationObject {
-            //TODO: Added this stuff
-            /*let objectName = options.objectName;
-            let objectEnumeration = [];
-
-            switch (objectName) {
-
-
-                case 'BarSettings':
-                    objectEnumeration.push({
-                        objectName: objectName,
-                        properties: {
-                            fill: this.settings_bar.fill,
-                            threshold1: this.settings_bar.threshold1
-                        },
-                        selector: null
-                    });
-                    break;
-
-            };*/
-            //end addition
             return VisualSettings.enumerateObjectInstances(this.settings || VisualSettings.getDefault(), options);
         }
     }

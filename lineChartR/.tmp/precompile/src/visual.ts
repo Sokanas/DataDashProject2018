@@ -23,7 +23,7 @@
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
  */
-module powerbi.extensibility.visual {
+module powerbi.extensibility.visual.lineChartRD902E64560EE4B62A6FFD29B1499B69E  {
     "use strict";
     // below is a snippet of a definition for an object which will contain the property values
     // selected by the users
@@ -46,14 +46,13 @@ module powerbi.extensibility.visual {
 
     // in order to improve the performance, one can update the <head> only in the initial rendering.
     // set to 'true' if you are using different packages to create the widgets
-    
     const updateHTMLHead: boolean = false;
     const renderVisualUpdateType: number[] = [
         VisualUpdateType.Resize,
         VisualUpdateType.ResizeEnd,
         VisualUpdateType.Resize + VisualUpdateType.ResizeEnd
     ];
-    
+
     export class Visual implements IVisual {
         private rootElement: HTMLElement;
         private headNodes: Node[];
@@ -149,7 +148,7 @@ module powerbi.extensibility.visual {
         private static parseSettings(dataView: DataView): VisualSettings {
             return VisualSettings.parse(dataView) as VisualSettings;
         }
-        
+
         /** 
          * This function gets called for each of the objects defined in the capabilities files and allows you to select which of the 
          * objects and properties you want to expose to the users in the property pane.
