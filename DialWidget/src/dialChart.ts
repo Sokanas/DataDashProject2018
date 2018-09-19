@@ -680,7 +680,7 @@ module powerbi.extensibility.visual {
 
                     viewModel.settings = settings;
 
-                    viewModel.settings = this.parseSettings(dataViews[0]);
+                    //viewModel.settings = this.parseSettings(dataViews[0]);
                 } catch (error) {
                     console.log(error);
                 }
