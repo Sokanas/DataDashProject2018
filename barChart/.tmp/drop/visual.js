@@ -623,9 +623,7 @@ var powerbi;
                         var _this = _super !== null && _super.apply(this, arguments) || this;
                         //public rcv_script: rcv_scriptSettings = new rcv_scriptSettings();
                         _this.ColourSettings = new ColourSettings();
-                        _this.Legend = new Legend();
-                        _this.ZoomSlider = new ZoomSlider();
-                        _this.OutlierSettings = new OutlierSettings();
+                        _this.Settings = new Settings();
                         return _this;
                     }
                     return VisualSettings;
@@ -638,6 +636,7 @@ var powerbi;
                 }*/
                 var ColourSettings = (function () {
                     function ColourSettings() {
+                        this.show = true;
                         this.fill = "#FD625E";
                         this.thresholdActive = false;
                         this.threshold1 = 40;
@@ -648,27 +647,16 @@ var powerbi;
                     return ColourSettings;
                 }());
                 barChart499A0A12A57F413881C384AA9A1840CB.ColourSettings = ColourSettings;
-                var Legend = (function () {
-                    function Legend() {
+                var Settings = (function () {
+                    function Settings() {
+                        this.fill = "#FD625E";
                         this.legendActive = true;
-                    }
-                    return Legend;
-                }());
-                barChart499A0A12A57F413881C384AA9A1840CB.Legend = Legend;
-                var ZoomSlider = (function () {
-                    function ZoomSlider() {
                         this.sliderActive = true;
-                    }
-                    return ZoomSlider;
-                }());
-                barChart499A0A12A57F413881C384AA9A1840CB.ZoomSlider = ZoomSlider;
-                var OutlierSettings = (function () {
-                    function OutlierSettings() {
                         this.outlieractive = false;
                     }
-                    return OutlierSettings;
+                    return Settings;
                 }());
-                barChart499A0A12A57F413881C384AA9A1840CB.OutlierSettings = OutlierSettings;
+                barChart499A0A12A57F413881C384AA9A1840CB.Settings = Settings;
             })(barChart499A0A12A57F413881C384AA9A1840CB = visual.barChart499A0A12A57F413881C384AA9A1840CB || (visual.barChart499A0A12A57F413881C384AA9A1840CB = {}));
         })(visual = extensibility.visual || (extensibility.visual = {}));
     })(extensibility = powerbi.extensibility || (powerbi.extensibility = {}));

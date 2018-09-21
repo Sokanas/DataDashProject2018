@@ -68,48 +68,9 @@
         }
       }
     },
-    "Legend": {
-      "displayName": "Legend",
-      "displayNameKey": "Visual_Legend",
-      "properties": {
-        "legendActive": {
-          "displayName": "Toggle Legend",
-          "displayNameKey": "Legend_Toggle",
-          "type": {
-            "bool": true
-          }
-        }
-      }
-    },
-    "ZoomSlider": {
-      "displayName": "Zooming Features",
-      "displayNameKey": "Visual_Zoom_Slider",
-      "properties": {
-        "sliderActive": {
-          "displayName": "Toggle Zoom Slider",
-          "displayNameKey": "Slider_Toggle",
-          "type": {
-            "bool": true
-          }
-        }
-      }
-    },
-    "OutlierSettings": {
-      "displayName": "Outlier Detection",
-      "displayNameKey": "Visual_Colours",
-      "properties": {
-        "outlieractive": {
-          "displayName": "Remove Outliers",
-          "displayNameKey": "Outlier_Detection_active",
-          "type": {
-            "bool": true
-          }
-        }
-      }
-    },
-    "ColourSettings": {
-      "displayName": "Colouring",
-      "displayNameKey": "Visual_Colours",
+    "Settings": {
+      "displayName": "General Settings",
+      "displayNameKey": "Visual_Settings",
       "properties": {
         "fill": {
           "displayName": "Colour",
@@ -122,11 +83,46 @@
             }
           }
         },
-        "thresholdActive": {
-          "displayName": "Threshold Colouring",
-          "displayNameKey": "Visual_Colour_Active",
+        "legendActive": {
+          "displayName": "Toggle Legend",
+          "displayNameKey": "Legend_Toggle",
           "type": {
             "bool": true
+          }
+        },
+        "sliderActive": {
+          "displayName": "Toggle Zoom Slider",
+          "displayNameKey": "Slider_Toggle",
+          "type": {
+            "bool": true
+          }
+        },
+        "outlieractive": {
+          "displayName": "Remove Outliers",
+          "displayNameKey": "Outlier_Detection_active",
+          "type": {
+            "bool": true
+          }
+        }
+      }
+    },
+    "ColourSettings": {
+      "displayName": "Threshold Colouring",
+      "displayNameKey": "Visual_Colours",
+      "properties": {
+        "show": {
+          "displayName": "Colouring Switch",
+            "type": {"bool": true}
+        },
+        "fill": {
+          "displayName": " Below Threshold Colour",
+          "displayNameKey": "Visual_Fill",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
           }
         },
         "threshold1": {
@@ -137,7 +133,7 @@
           }
         },
         "colour1": {
-          "displayName": "Threshold 1 Colour",
+          "displayName": "Between Thresholds Colour",
           "displayNameKey": "Visual_Threshold_1_Colour",
           "type": {
             "fill": {
@@ -155,7 +151,7 @@
           }
         },
         "colour2": {
-          "displayName": "Threshold 2 Colour",
+          "displayName": "Above Thresholds Colour",
           "displayNameKey": "Visual_Threshold_2_Colour",
           "type": {
             "fill": {

@@ -17,23 +17,28 @@ baseColour = "#FD625E"
 thresholdActive = FALSE;
 legendActive = TRUE;
 sliderActive = TRUE;
-if(exists("ColourSettings_fill")){
-	baseColour = as.character(ColourSettings_fill);
+if(exists("Settings_fill")){
+	baseColour = as.character(Settings_fill);
 }
-if(exists("ColourSettings_thresholdActive")){
-	thresholdActive = as.logical(ColourSettings_thresholdActive);
+if(exists("ColourSettings_show")){
+	thresholdActive = as.logical(ColourSettings_show);
 }
-if(exists("Legend_legendActive")){
-	legendActive = as.logical(Legend_legendActive);
+if(exists("Settings_legendActive")){
+	legendActive = as.logical(Settings_legendActive);
 }
-if(exists("ZoomSlider_sliderActive")){
-	sliderActive = as.logical(ZoomSlider_sliderActive);
+if(exists("Settings_sliderActive")){
+	sliderActive = as.logical(Settings_sliderActive);
 }
 
 #If Threshold Colouring is active
 if(thresholdActive){
 
 	#Checking if colours and thresholds have been set, and setting defaults if not
+	if(exists("ColourSettings_fill")){
+		baseColour = ColourSettings_fill;
+	}else{
+		baseColour = "#FD625E";
+	}
 	if(exists("ColourSettings_threshold1")){
 		threshold1Value = ColourSettings_threshold1;
 	}else{
@@ -71,8 +76,8 @@ if(thresholdActive){
 	#Iterate through number of data series' in the Values field, creating a clustered bar chart if there's more than one
 	for(cols in 1:ncol(Values)){ 
 		#Check if outlier detection is active, and alters values if true
-		if(exists("OutlierSettings_outlieractive")){
-			outlieractive = as.logical(OutlierSettings_outlieractive);
+		if(exists("Settings_outlieractive")){
+			outlieractive = as.logical(Settings_outlieractive);
 			if(outlieractive){
 				min = min(Values[[cols]]);
 				max = max(Values[[cols]]);
@@ -94,6 +99,8 @@ if(thresholdActive){
 					}	
 				}
 			}
+		}else{
+			outlieractive = FALSE;
 		}
 
 		#Maths on the colours provided above to differentiate between bars in the graph
@@ -166,8 +173,8 @@ if(thresholdActive){
 	}
 
 	for(cols in 1:ncol(Values)){
-		if(exists("OutlierSettings_outlieractive")){
-			outlieractive = as.logical(OutlierSettings_outlieractive);
+		if(exists("Settings_outlieractive")){
+			outlieractive = as.logical(Settings_outlieractive);
 			if(outlieractive){
 				min = min(Values[[cols]]);
 				max = max(Values[[cols]]);
@@ -189,6 +196,9 @@ if(thresholdActive){
 					}	
 				}
 			}
+		}
+		else{
+			outlieractive = FALSE;
 		}
 
 		rgbvals = col2rgb(baseColour);

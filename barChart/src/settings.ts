@@ -32,9 +32,7 @@ module powerbi.extensibility.visual {
     export class VisualSettings extends DataViewObjectsParser {
         //public rcv_script: rcv_scriptSettings = new rcv_scriptSettings();
         public ColourSettings: ColourSettings = new ColourSettings();
-        public Legend: Legend = new Legend();
-        public ZoomSlider: ZoomSlider = new ZoomSlider();
-        public OutlierSettings: OutlierSettings = new OutlierSettings();
+        public Settings: Settings = new Settings();
     }
 
 
@@ -45,6 +43,7 @@ module powerbi.extensibility.visual {
     }*/
 
     export class ColourSettings {
+        public show: boolean = true;
         public fill: string = "#FD625E";
         public thresholdActive: boolean = false;
         public threshold1: number = 40;
@@ -53,15 +52,10 @@ module powerbi.extensibility.visual {
         public colour2: string = "#01B8AA";
     }
 
-    export class Legend {
+    export class Settings {
+        public fill: string = "#FD625E";
         public legendActive: boolean = true;
-    }
-
-    export class ZoomSlider {
         public sliderActive: boolean = true;
-    }
-
-    export class OutlierSettings {
         public outlieractive: boolean = false;
     }
 }
