@@ -43,7 +43,7 @@ if(exists("Legend_legendActive")){
 }
 
 #Setting colours for multiple lines by iterating through the PowerBI presets of the same shade
-#Determine the establishment of coordinates and data in any color case.
+#Determine the establishment of coordinates and data in any color case, and initial creation of the graph object
 if(colourFound == FALSE){
 	if(lineColour %in% reds){
 		p <- plot_ly(Values);
