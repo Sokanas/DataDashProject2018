@@ -7,6 +7,7 @@ libraryRequireInstall("htmlwidgets");
 ####################################################
 
 ################### Actual code ####################
+#Import the data from PowerBI
 dataFrame <- data.frame(Axis, Values[[1]]);
 
 #dataFrame[[1]] <- factor(dataFrame[[1]], levels = dataFrame[[1]]) #Forces data to sort by original order. Turns out to be unnecessary, left commented here in case it becomes useful
