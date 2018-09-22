@@ -49,7 +49,7 @@ module powerbi.extensibility.visual {
        public threshold2: number = 70;
        public colour2: string = "#01B8AA";
    }
-
+   // Call legend function
    export class Legend {
        public legendActive: boolean = true;
    }
