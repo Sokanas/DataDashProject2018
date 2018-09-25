@@ -10,6 +10,9 @@ module powerbi.extensibility.visual
         labelSize: number = 10;
         labelColor: string = "black";
         showMinMax: boolean = true;
+        tickSize: number = 2;
+        showTicks: boolean = true;
+        tickColor: string = "white";
     }
 
     export class TargetSettings{

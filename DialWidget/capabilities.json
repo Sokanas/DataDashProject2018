@@ -57,6 +57,31 @@
                     "type": {
                         "bool": true
                     }
+                },
+                "showTicks": {
+                    "displayName": "Show Tick Marks",
+                    "displayNameKey": "showTicks",
+                    "type": {
+                        "bool": true
+                    }
+                },
+                "tickSize": {
+                    "displayName": "Tick Size",
+                    "displayNameKey": "tickSize",
+                    "type": {
+                        "numeric": true
+                    }
+                },
+                "tickColor": {
+                    "displayName": "Tick Colour",
+                    "displayNameKey": "tickColor",
+                    "type": {
+                        "fill": {
+                            "solid": {
+                                "color": true
+                            }
+                        }
+                    }
                 }
             }
         },

@@ -1,7 +1,7 @@
 module powerbi.extensibility.visual {
     // powerbi.visuals
     import ISelectionId = powerbi.visuals.ISelectionId;
-    
+
     /**
      * Interface for BarChart data points.
      *
@@ -157,6 +157,9 @@ module powerbi.extensibility.visual {
             });
             //DialChart.e.innerHTML += "<br/>base attibs and data updated";
 
+            this.minValue = this.data.settings.DialSettings.minimumValue;
+            this.maxValue = this.data.settings.DialSettings.maximumValue;
+            this.Target = this.data.settings.TargetSettings.targetValue;
 
             //Clear Everything
             this.svg.selectAll("*").remove();
@@ -202,9 +205,73 @@ module powerbi.extensibility.visual {
                 //        DialChart.e.innerHTML += "<br/>band 5 ok";
             }
 
-            //3.    Major Tick Marks
-
-            //3.B.  Minor Tick Marks
+            if (this.data.settings.LabelSettings.showTicks == true) {
+                //3.    Major Tick Marks
+                var miniTick = this.data.settings.LabelSettings.tickSize;
+                var bigTick = miniTick * 2;
+                this.drawTick(this.data.settings.LabelSettings.tickColor, 0, bigTick);
+                this.drawTick(this.data.settings.LabelSettings.tickColor, 10, bigTick);
+                this.drawTick(this.data.settings.LabelSettings.tickColor, 20, bigTick);
+                this.drawTick(this.data.settings.LabelSettings.tickColor, 30, bigTick);
+                this.drawTick(this.data.settings.LabelSettings.tickColor, 40, bigTick);
+                this.drawTick(this.data.settings.LabelSettings.tickColor, 50, bigTick);
+                this.drawTick(this.data.settings.LabelSettings.tickColor, 60, bigTick);
+                this.drawTick(this.data.settings.LabelSettings.tickColor, 70, bigTick);
+                this.drawTick(this.data.settings.LabelSettings.tickColor, 80, bigTick);
+                this.drawTick(this.data.settings.LabelSettings.tickColor, 90, bigTick);
+                this.drawTick(this.data.settings.LabelSettings.tickColor, 100, bigTick);
+                //3.B.  Minor Tick Marks
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 2, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 4, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 6, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 8, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 10, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 12, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 14, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 16, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 18, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 20, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 22, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 24, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 26, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 28, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 30, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 32, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 34, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 36, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 38, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 40, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 42, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 44, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 46, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 48, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 50, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 52, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 54, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 56, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 58, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 60, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 62, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 64, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 66, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 68, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 70, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 72, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 74, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 76, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 78, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 80, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 82, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 84, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 86, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 88, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 90, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 92, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 94, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 96, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 98, miniTick);
+                this.drawShortTick(this.data.settings.LabelSettings.tickColor, 100, miniTick);
+            }
 
             //4. Draw the 'Needle'
             this.drawValueNeedle(this.Value, this.data.settings.DialSettings.dialColor,
@@ -219,10 +286,10 @@ module powerbi.extensibility.visual {
             //5. Draw Labels
             if (this.data.settings.TargetSettings.showTarget == true) {
                 this.drawTargetTick(this.data.settings.TargetSettings.targetColor,
-                    this.Target,
-                    8);
+                    this.data.settings.TargetSettings.targetValue,
+                    this.data.settings.TargetSettings.targetLineSize);
                 //       DialChart.e.innerHTML += "<br/>draw target line";
-                this.drawTargetLabel(this.Target);
+                this.drawTargetLabel(this.data.settings.TargetSettings.targetValue);
             }
 
             if (this.data.settings.LabelSettings.showMinMax == true) {
@@ -259,14 +326,14 @@ module powerbi.extensibility.visual {
                 .append("path")
                 .attr("d", <any>background)
                 .attr("class", "outerArc")
-                .attr("fill", "#8c8f93")
+                .style("fill", "#8c8f93")
                 .attr("transform", translate);
 
             this.svg
                 .append("path")
                 .attr("d", <any>inner)
                 .attr("class", "innerArc")
-                .attr("fill", "#d4d8dd")
+                .style("fill", "#d4d8dd")
                 .attr("transform", translate);
         }
 
@@ -294,7 +361,7 @@ module powerbi.extensibility.visual {
                 .append("path")
                 .attr("d", <any>inner)
                 .attr("class", name)
-                .attr("fill", color)
+                .style("fill", color)
                 .attr("transform", translate);
         }
 
@@ -304,31 +371,74 @@ module powerbi.extensibility.visual {
          * @param length    Length of the Major Tick Lines
          * @param num       Number of Major Ticks to Draw
          */
-        private drawMajorTicks(color: string, length: number, num: number) {
+        private drawTick(color: string, position: number, size: number) {
             var cscale = d3.scale.linear().domain([this.minValue, this.maxValue]).range([-120 * (Math.PI / 180), 120 * (Math.PI / 180)]);
-            var x1, x2, y1, y2;
+            var v = 0;
 
-            x1 = 250; y1 = 250;
-        }
+            //Constrain to Bounds with needle limited to the range of the graph
+            if (position <= this.minValue)
+                v = this.minValue;
+            else if (position >= this.maxValue)
+                v = this.maxValue;
+            else
+                v = position;
+            var vrot = 37.5;        //Rotate needle right by 37.5 units
+            v += vrot;
+            v = cscale(v);
 
-/**
- * 
- * @param color 
- * @param length 
- * @param num 
- * @param start 
- * @param end 
- */
-        private drawMinorTicks(color: string, length: number, num: number, start: number, end: number) {
-            var cscale = d3.scale.linear().domain([this.minValue, this.maxValue]).range([-120 * (Math.PI / 180), 120 * (Math.PI / 180)]);
-            var x1, x2, y1, y2;
-
-            x1 = 250; y1 = 250;   //center points
-            //x2 = 250 + this.innerRadius * (cscale(value));
-            // y2 = 250 + this.innerRadius * (cscale(value));
+            var cos1Adj = Math.cos(v) * (this.outerRadius - 1);
+            var sin1Adj = Math.sin(v) * (this.outerRadius - 1);
+            var cos2Adj = Math.cos(v) * (this.innerRadius + 5);
+            var sin2Adj = Math.sin(v) * (this.innerRadius + 5);
+            var x1 = 250 + cos1Adj * -1;
+            var y1 = 250 + sin1Adj * -1;
+            var x2 = 250 + cos2Adj * -1;
+            var y2 = 250 + sin2Adj * -1;
 
             this.svg.append("line")
+                .attr("x1", x1)
+                .attr("y1", y1)
+                .attr("x2", x2)
+                .attr("y2", y2)
+                .attr("class", name)
+                .style("stroke-width", size)
+                .style("stroke", color);
         }
+
+        private drawShortTick(color: string, position: number, size: number) {
+            var cscale = d3.scale.linear().domain([this.minValue, this.maxValue]).range([-120 * (Math.PI / 180), 120 * (Math.PI / 180)]);
+            var v = 0;
+
+            //Constrain to Bounds with needle limited to the range of the graph
+            if (position <= this.minValue)
+                v = this.minValue;
+            else if (position >= this.maxValue)
+                v = this.maxValue;
+            else
+                v = position;
+            var vrot = 37.5;        //Rotate needle right by 37.5 units
+            v += vrot;
+            v = cscale(v);
+
+            var cos1Adj = Math.cos(v) * (this.outerRadius - 1);
+            var sin1Adj = Math.sin(v) * (this.outerRadius - 1);
+            var cos2Adj = Math.cos(v) * (this.innerRadius + 20);
+            var sin2Adj = Math.sin(v) * (this.innerRadius + 20);
+            var x1 = 250 + cos1Adj * -1;
+            var y1 = 250 + sin1Adj * -1;
+            var x2 = 250 + cos2Adj * -1;
+            var y2 = 250 + sin2Adj * -1;
+
+            this.svg.append("line")
+                .attr("x1", x1)
+                .attr("y1", y1)
+                .attr("x2", x2)
+                .attr("y2", y2)
+                .attr("class", name)
+                .style("stroke-width", size)
+                .style("stroke", color);
+        }
+
 
         /**
          * drawValueNeedle - will technically allow as many needles as we want created
@@ -353,8 +463,8 @@ module powerbi.extensibility.visual {
             //Contrain Stroke Size
             if (size <= 1)
                 size = 1;
-            else if (size >= 4)
-                size = 4;
+            else if (size >= 10)
+                size = 10;
 
             var thetaRad = cscale(v);
             var needleLength = this.innerRadius + adjLength;
@@ -371,7 +481,7 @@ module powerbi.extensibility.visual {
                 .attr("d", triangle)
                 .attr("class", name)
                 .style("fill", color)
-                .style("stoke-with", size)
+                .style("stroke-width", size)
                 .style("stroke", color);
         }
 
@@ -432,7 +542,7 @@ module powerbi.extensibility.visual {
                 .attr("x2", x2)
                 .attr("y2", y2)
                 .attr("class", name)
-                .style("stoke-with", size)
+                .style("stroke-width", size)
                 .style("stroke", color);
         }
 
@@ -463,7 +573,7 @@ module powerbi.extensibility.visual {
                 .attr("x", x1)
                 .attr("y", y1)
                 .attr("font-family", "sans-serif")
-                .attr("font-size", "20px")
+                .attr("font-size", "13px")
                 .attr("fill", "black")
                 .text(value);
 
@@ -511,11 +621,11 @@ module powerbi.extensibility.visual {
         }
 
 
-/**
- * 
- * @param selection 
- * @param selectionIds 
- */
+        /**
+         * 
+         * @param selection 
+         * @param selectionIds 
+         */
         private syncSelectionState(
             selection: d3.Selection<DialChartDataPoint>,
             selectionIds: ISelectionId[]
@@ -619,15 +729,18 @@ module powerbi.extensibility.visual {
             } else {
                 try {
                     let objects = options.dataViews[0].metadata.objects;
-                //    DialChart.e.innerHTML += "<br/>vs: getValue<> ...";
+                    //    DialChart.e.innerHTML += "<br/>vs: getValue<> ...";
 
                     var settings: DialChartSettings = new DialChartSettings();
                     settings.LabelSettings = {
                         labelSize: getValue<number>(objects, 'LabelSettings', 'labelSize', defaultSettings.LabelSettings.labelSize),
                         labelColor: getValue<string>(objects, 'LabelSettings', 'labelColor', defaultSettings.LabelSettings.labelColor),
-                        showMinMax: getValue<boolean>(objects, 'LabelSettings', 'showMinMax', defaultSettings.LabelSettings.showMinMax)
+                        showMinMax: getValue<boolean>(objects, 'LabelSettings', 'showMinMax', defaultSettings.LabelSettings.showMinMax),
+                        tickColor: getValue<string>(objects, 'LabelSettings', 'tickColor', defaultSettings.LabelSettings.tickColor),
+                        showTicks: getValue<boolean>(objects, 'LabelSettings', 'showTicks', defaultSettings.LabelSettings.showTicks),
+                        tickSize: getValue<number>(objects, 'LabelSettings', 'tickSize', defaultSettings.LabelSettings.tickSize)
                     };
-                //    DialChart.e.innerHTML += "<br/>vs: getValue<> ...";
+                    //    DialChart.e.innerHTML += "<br/>vs: getValue<> ...";
                     settings.TargetSettings = {
                         targetTextSize: getValue<number>(objects, 'TargetSettings', 'targetTextSize', defaultSettings.TargetSettings.targetTextSize),
                         targetColor: getValue<string>(objects, 'TargetSettings', 'targetColor', defaultSettings.TargetSettings.targetColor),
@@ -635,7 +748,7 @@ module powerbi.extensibility.visual {
                         targetLineSize: getValue<number>(objects, 'TargetSettings', 'targetLineSize', defaultSettings.TargetSettings.targetLineSize),
                         targetValue: getValue<number>(objects, 'TargetSettings', 'targetValue', defaultSettings.TargetSettings.targetValue)
                     };
-                //    DialChart.e.innerHTML += "<br/>vs: getValue<> ...";
+                    //    DialChart.e.innerHTML += "<br/>vs: getValue<> ...";
                     settings.DialSettings = {
                         dialValueSize: getValue<number>(objects, 'DialSettings', 'dialValueSize', defaultSettings.DialSettings.dialValueSize),
                         dialColor: getValue<string>(objects, 'DialSettings', 'dialColor', defaultSettings.DialSettings.dialColor),
@@ -649,14 +762,14 @@ module powerbi.extensibility.visual {
                         bandEnd: getValue<number>(objects, 'BandOneSettings', 'bandEnd', defaultSettings.BandOneSettings.bandEnd),
                         bandColor: getValue<string>(objects, 'BandOneSettings', 'bandColor', defaultSettings.BandOneSettings.bandColor)
                     };
-                //    DialChart.e.innerHTML += "<br/>vs: getValue<> ...";
+                    //    DialChart.e.innerHTML += "<br/>vs: getValue<> ...";
                     settings.BandTwoSettings = {
                         showBand: getValue<boolean>(objects, 'BandTwoSettings', 'showBand', defaultSettings.BandTwoSettings.showBand),
                         bandStart: getValue<number>(objects, 'BandTwoSettings', 'bandStart', defaultSettings.BandTwoSettings.bandStart),
                         bandEnd: getValue<number>(objects, 'BandTwoSettings', 'bandEnd', defaultSettings.BandTwoSettings.bandEnd),
                         bandColor: getValue<string>(objects, 'BandTwoSettings', 'bandColor', defaultSettings.BandTwoSettings.bandColor)
                     };
-                //    DialChart.e.innerHTML += "<br/>vs: getValue<> ...";
+                    //    DialChart.e.innerHTML += "<br/>vs: getValue<> ...";
                     settings.BandThreeSettings = {
                         showBand: getValue<boolean>(objects, 'BandThreeSettings', 'showBand', defaultSettings.BandThreeSettings.showBand),
                         bandStart: getValue<number>(objects, 'BandThreeSettings', 'bandStart', defaultSettings.BandThreeSettings.bandStart),
@@ -676,7 +789,7 @@ module powerbi.extensibility.visual {
                         bandColor: getValue<string>(objects, 'BandFiveSettings', 'bandColor', defaultSettings.BandFiveSettings.bandColor)
                     };
 
-                //    DialChart.e.innerHTML += "<br/>vs: parseSettings";
+                    //    DialChart.e.innerHTML += "<br/>vs: parseSettings";
 
                     viewModel.settings = settings;
 
@@ -687,7 +800,7 @@ module powerbi.extensibility.visual {
             }
 
 
-        //    DialChart.e.innerHTML += "<br/>vs end";
+            //    DialChart.e.innerHTML += "<br/>vs end";
             return viewModel;
         }
     }
