@@ -9,19 +9,22 @@ libraryRequireInstall("dplyr")
 ####################################################
 
 ################### Actual code ####################
+dataFrame <- data.frame(Label, Values[[1]]);
+#dataFrame <- sapply(strsplit(rownames(dataFrame), " "), "[[", 1);
 
-# Create test data.
-mtcars$manuf <- sapply(strsplit(rownames(mtcars), " "), "[[", 1)
 
-p <- mtcars %>%
-  group_by(manuf) %>%
+
+####################################################
+p <- dataFrame %>%
+  group_by(dataFrame[[1]]) %>%
   summarize(count = n()) %>%
-  plot_ly(labels = ~manuf, values = ~count) %>%
+  plot_ly(labels = ~dataFrame[[1]], values = ~dataFrame[[2]]) %>%
   add_pie(hole = 0.6) %>%
-  layout(title = "Donut charts using Plotly",  showlegend = F,
+  layout(title = "Donut chart",  showlegend = F,
          xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
          yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
 
-####################################################
 
+############# Create and save widget ###############
 internalSaveWidget(p, 'out.html');
+####################################################

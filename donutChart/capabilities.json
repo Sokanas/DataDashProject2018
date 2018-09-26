@@ -4,7 +4,13 @@
       "displayName": "Values",
       "kind": "GroupingOrMeasure",
       "name": "Values"
+    },
+    {
+      "displayName": "Label",
+      "kind": "GroupingOrMeasure",
+      "name": "Label"
     }
+    
   ],
   "dataViewMappings": [
     {
@@ -16,6 +22,11 @@
                 {
                   "for": {
                     "in": "Values"
+                  }
+                },
+                {
+                  "for": {
+                    "in": "Label"
                   }
                 }
               ],
