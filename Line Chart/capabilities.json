@@ -1,0 +1,274 @@
+{
+  "dataRoles": [
+    {
+      "name": "Date",
+      "kind": "Grouping",
+      "displayName": "Date",
+      "displayNameKey": "Visual_Date"
+    },
+    {
+      "name": "Values",
+      "kind": "Measure",
+      "displayName": "Values",
+      "displayNameKey": "Visual_Values"
+    },
+    {
+      "name": "Counter",
+      "kind": "Measure",
+      "displayName": "Counter",
+      "displayNameKey": "Visual_Counter"
+    }
+],
+"dataViewMappings": [
+    {
+      "conditions": [
+        {
+          "Date": {
+            "min": 0,
+            "max": 1
+          },
+          "Values": {
+            "min": 0,
+            "max": 1
+          },
+          "Counter": {
+            "min": 0,
+            "max": 1
+          },
+          "Labels": {
+            "min": 0,
+            "max": 1
+          }
+        }
+      ],
+      "categorical": {
+        "categories": {
+          "select": [
+            {
+              "for": {
+                "in": "Date"
+              }
+            }
+          ],
+          "dataReductionAlgorithm": {
+            "top": {
+              "count": 10000
+            }
+          }
+        },
+        "values": {
+          "select": [
+            {
+              "bind": {
+                "to": "Values"
+              }
+            },
+             {
+              "bind": {
+                "to": "Counter"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "objects": {
+    "dotoptions": {
+      "displayName": "Dot",
+      "displayNameKey": "Visual_Dot",
+      "properties": {
+        "color": {
+          "displayName": "Colour",
+          "displayNameKey": "Visual_Colour",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "dotSizeMin": {
+          "displayName": "Dot Size",
+          "displayNameKey": "Min_dot",
+          "type": {
+            "numeric": true
+          }
+        },
+        "dotSizeMax": {
+          "displayName": "Max Dot Size",
+          "displayNameKey": "Max_dot",
+          "type": {
+            "numeric": true
+          }
+        }
+      }
+    },
+    "lineoptions": {
+      "displayName": "Line",
+      "displayNameKey": "Visual_Line",
+      "properties": {
+        "fill": {
+          "displayName": "Fill",
+          "displayNameKey": "Visual_Fill",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "lineThickness": {
+          "displayName": "Thickness",
+          "displayNameKey": "Visual_Thickness",
+          "type": {
+            "numeric": true
+          }
+        },
+        "lineThresholdValue": {
+          "displayName": "Lower",
+          "displayNameKey": "Threshold 1",
+          "type": {
+            "numeric": true
+          }
+        },
+        "lineThresholdValue2": {
+          "displayName": "Upper",
+          "displayNameKey": "Threshold 2",
+          "type": {
+            "numeric": true
+          }
+        },
+        "lineThresholdColor": {
+          "displayName": "Threshold Color",
+          "displayNameKey": "Visual_Color",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "lineThresholdColor2": {
+          "displayName": "Threshold Color 2",
+          "displayNameKey": "Visual_Color",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "lineThreshold": {
+          "displayName": "Threshold",
+          "displayNameKey": "Threshold_Enables",
+          "type": {
+            "bool": true
+          }
+        },
+      "lineThresholdBar": {
+          "displayName": "Lines",
+          "displayNameKey": "Threshold_LineEnables",
+          "type": {
+            "bool": true
+          }
+        }
+      }
+    },
+    "xAxis": {
+      "displayName": "X-Axis",
+      "displayNameKey": "Visual_XAxis",
+      "properties": {
+        "show": {
+          "displayName": "Show",
+          "displayNameKey": "Visual_Show",
+          "type": {
+            "bool": true
+          }
+        },
+        "color": {
+          "displayName": "Color",
+          "displayNameKey": "Visual_Color",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "textSize": {
+          "displayName": "Text Size",
+          "displayNameKey": "Visual_TextSize",
+          "type": {
+              "numeric": true
+          }
+        }
+      }
+    },
+    "yAxis": {
+      "displayName": "Y-Axis",
+      "displayNameKey": "Visual_YAxis",
+      "properties": {
+        "show": {
+          "displayName": "Show",
+          "displayNameKey": "Visual_Show",
+          "type": {
+            "bool": true
+          }
+        },
+        "color": {
+          "displayName": "Color",
+          "displayNameKey": "Visual_Color",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "textSize": {
+          "displayName": "Text Size",
+          "displayNameKey": "Visual_TextSize",
+          "type": {
+              "numeric": true
+          }
+        },
+        "isDuplicated": {
+          "displayName": "Mirror",
+          "displayNameKey": "Visual_Duplicated",
+          "type": {
+            "bool": true
+          }
+        },
+        "dynamicScaling": {
+          "displayName": "Scaled",
+          "displayNameKey": "Dynamic_Scaling",
+          "type": {
+            "bool": true
+          }
+        },
+        "yscaleminin": {
+          "displayName": "Scale Min",
+          "displayNameKey": "yscaleminin",
+          "type": {
+              "numeric": true
+          }
+        },
+        "yscalemaxin": {
+          "displayName": "Scale Max",
+          "displayNameKey": "yscalemaxin",
+          "type": {
+              "numeric": true
+          }
+        }
+      }
+    }
+  },
+  "supportsHighlight": true
+}

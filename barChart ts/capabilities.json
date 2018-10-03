@@ -1,0 +1,84 @@
+{
+  "supportsHighlight":  true,
+  "dataRoles": [
+    {
+      "displayName": "Axis",
+      "name": "Axis",
+      "kind": "Grouping"
+    },
+    {
+      "displayName": "Values",
+      "name": "Values",
+      "kind": "Measure"
+    }
+  ],
+  "objects": {
+    "xAxis": {
+      "displayName": "X Axis",
+      "properties": {
+        "show": {
+          "displayName": "Show X Axis",
+          "type": {
+            "bool": true
+          }
+        }
+      }
+    },
+    "yAxis": {
+      "displayName": "Y Axis",
+      "properties": {
+        "show": {
+          "displayName": "Show Y Axis",
+          "type": {
+            "bool": true
+          }
+        }
+      }
+    },
+    "Colours": {
+      "displayName": "Colouring",
+      "properties": {
+        "fill": {
+          "displayName": "Colour",
+          "type": {
+            "fill": {
+              "solid": {
+                "color":  true
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "dataViewMappings": [
+    {
+      "conditions": [
+        {
+          "Axis": {
+            "max": 1
+          }
+        }
+      ],
+      "categorical": {
+        "categories": {
+          "for": {
+            "in": "Axis"
+          },
+          "dataReductionAlgorithm": {
+            "top": {}
+          }
+        },
+        "values": {
+          "select": [
+            {
+              "bind": {
+                "to": "Values"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

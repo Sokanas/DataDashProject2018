@@ -1,0 +1,18 @@
+1. Basic Line Graph
+    BASIC LINE GRAPH IS CURRENTLY COMPLETE
+
+
+
+
+2. Dynamic Y Axis Scaling
+    -> I think this is somewhat simple to implement but I won't know until I look into it.
+
+3. Colouration of Line changing baseed on threshold values
+    -> A single threshold may be doable
+
+4. Dynamic granulation of data points in data series
+    -> This is an automatic feature builtin to Power BI. Customising this will be hard
+
+
+Note: Options added for item 2 and 3 in widget settings and PBI settings
+Note: Data Granulation maybe difficult, however getting this done in a manner that TMD wants may be hard.
