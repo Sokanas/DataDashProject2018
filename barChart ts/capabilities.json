@@ -13,22 +13,23 @@
     }
   ],
   "objects": {
-    "xAxis": {
-      "displayName": "X Axis",
+    "Axes": {
+      "displayName": "Axis Settings",
       "properties": {
-        "show": {
+        "yShow": {
+          "displayName": "Show Y Axis",
+          "type": {
+            "bool": true
+          }
+        },
+        "xShow": {
           "displayName": "Show X Axis",
           "type": {
             "bool": true
           }
-        }
-      }
-    },
-    "yAxis": {
-      "displayName": "Y Axis",
-      "properties": {
-        "show": {
-          "displayName": "Show Y Axis",
+        },
+        "scaling": {
+          "displayName": "Dynamic Scaling",
           "type": {
             "bool": true
           }
@@ -43,9 +44,71 @@
           "type": {
             "fill": {
               "solid": {
-                "color":  true
+                "color": true
               }
             }
+          }
+        }
+      }
+    },
+    "ColourSettings": {
+      "displayName": "Threshold Colouring",
+      "properties": {
+        "show": {
+          "displayName": "Colouring Switch",
+          "type": { "bool": true }
+        },
+        "colour0": {
+          "displayName": " Below Threshold Colour",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "threshold1": {
+          "displayName": "Threshold 1",
+          "type": {
+            "numeric": true
+          }
+        },
+        "colour1": {
+          "displayName": "Between Thresholds Colour",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        },
+        "threshold2": {
+          "displayName": "Threshold 2",
+          "type": {
+            "numeric": true
+          }
+        },
+        "colour2": {
+          "displayName": "Above Thresholds Colour",
+          "type": {
+            "fill": {
+              "solid": {
+                "color": true
+              }
+            }
+          }
+        }
+      }
+    },
+    "outliers": {
+      "displayName": "Outlier Removal",
+      "properties": {
+        "show": {
+          "displayName": "Outlier Removal",
+          "type": {
+            "bool": true
           }
         }
       }

@@ -1,6 +1,6 @@
 module powerbi.visuals.plugins {
-    export var barChartBBB7DBA9A1C741B7A4FE47AD4699A7BA_DEBUG = {
-        name: 'barChartBBB7DBA9A1C741B7A4FE47AD4699A7BA_DEBUG',
+    export var barChartBBB7DBA9A1C741B7A4FE47AD4699A7BA = {
+        name: 'barChartBBB7DBA9A1C741B7A4FE47AD4699A7BA',
         displayName: 'barChart',
         class: 'Visual',
         version: '1.0.0',

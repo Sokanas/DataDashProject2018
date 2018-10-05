@@ -38,17 +38,10 @@ module powerbi.extensibility.visual.barChartBBB7DBA9A1C741B7A4FE47AD4699A7BA  {
         tooltips: VisualTooltipDataItem[];
     };
 
-    interface DataSeries {
-        dataPoints: DataPoint[];
-        colours: string;
-        identity: powerbi.visuals.ISelectionId;
-        name: string;
-    }
-
     interface ViewModel {
-        dataSeries: DataSeries[];
+        dataPoints: DataPoint[];
         maxValue: number;
-        highlights: boolean
+        highlights: boolean;
     };
 
     export class Visual implements IVisual {
@@ -81,6 +74,10 @@ module powerbi.extensibility.visual.barChartBBB7DBA9A1C741B7A4FE47AD4699A7BA  {
                     show: {
                         default: true,
                         value: true
+                    },
+                    scaling: {
+                        default: false,
+                        value: true
                     }
                 }
             },
@@ -88,6 +85,42 @@ module powerbi.extensibility.visual.barChartBBB7DBA9A1C741B7A4FE47AD4699A7BA  {
                 top: {
                     default: 10,
                     value: 10
+                }
+            },
+            colouring: {
+                active: {
+                    default: false,
+                    value: false
+                },
+                thresholds: {
+                    first: {
+                        default: 0,
+                        value: 0
+                    },
+                    second: {
+                        default: 0,
+                        value: 0
+                    }
+                },
+                colours: {
+                    baseColour: {
+                        default: "#FD625E",
+                        value: "#FD625E"
+                    },
+                    colour1: {
+                        default: "#F2C80F",
+                        value: "#F2C80F"
+                    },
+                    colour2: {
+                        default: "#01B8AA",
+                        value: "#01B8AA"
+                    }
+                }
+            },
+            outliers: {
+                removed: {
+                    default: false,
+                    value: false
                 }
             }
         }
@@ -112,6 +145,8 @@ module powerbi.extensibility.visual.barChartBBB7DBA9A1C741B7A4FE47AD4699A7BA  {
 
             //Get data from viewModel
             this.viewModel = this.getViewModel(options);
+            let data = this.viewModel.dataPoints;
+            let maxValue = this.viewModel.maxValue;
 
             let width = options.viewport.width;
             let height = options.viewport.height;
@@ -121,11 +156,71 @@ module powerbi.extensibility.visual.barChartBBB7DBA9A1C741B7A4FE47AD4699A7BA  {
                 width: width,
                 height: height
             });
-
+            if (this.settings.outliers.removed.value) {
+                //2 standard deviations:
+                //Find mean
+                //subtract mean from each value and square result
+                //find mean of new values
+                //sqrt that mean
+                //multiply by 2
+                let total = 0;
+                let average = 0;
+                let deviation = 0;
+                for (let i = 0, len = data.length; i < len; i++) {
+                    total = total + data[i].value;
+                }
+                average = total / data.length;
+                total = 0;
+                for (let i = 0, len = data.length; i < len; i++) {
+                    let temp = data[i].value - average;
+                    let variance = temp * temp;
+                    total = total + variance;
+                }
+                deviation = total / data.length;
+                deviation = Math.sqrt(deviation);
+                for (let i = 0, len = data.length; i < len; i++) {
+                    if (data[i].value < (average - (deviation)) || data[i].value > (average + (deviation))) {
+                        data.splice(i, 1);
+                        i--;
+                        len--;
+                    }
+                }
+                let max = 0;
+                for (let i = 0, len = data.length; i < len; i++) {
+                    if (data[i].value > max) {
+                        max = data[i].value;
+                        maxValue = max;
+                    }
+                }
+            }
             //Define scaling behavious to map chart co-ordinates to screen co-ordinates, and creating axes
             let yScale = d3.scale.linear()
-                .domain([0, this.viewModel.maxValue])
+                .domain([0, maxValue])
                 .range([height - xAxisPadding, 0 + this.settings.border.top.value]);
+            if (this.settings.axis.y.scaling.value) {
+                let min = 0;
+                let max = 0;
+                let domainmin = 0;
+                let diff = 0;
+                for (let i = 0, len = data.length; i < len; i++) {
+                    if (i == 0) {
+                        min = data[i].value
+                    }
+                    if (data[i].value < min) {
+                        min = data[i].value;
+                    }
+                    if (data[i].value > max) {
+                        max = data[i].value;
+                    }
+                }
+                diff = max - min;
+                if (diff < (min / 2)) {
+                    domainmin = min - (diff / 2);
+                    yScale = d3.scale.linear()
+                        .domain([0 + domainmin, maxValue + (diff / 2)])
+                        .range([height - xAxisPadding, 0 + this.settings.border.top.value]);
+                }
+            }
             let yAxis = d3.svg.axis()
                 .scale(yScale)
                 .orient("left")
@@ -144,7 +239,7 @@ module powerbi.extensibility.visual.barChartBBB7DBA9A1C741B7A4FE47AD4699A7BA  {
                     "font-size": "x-small"
                 });
             let xScale = d3.scale.ordinal()
-                .domain(this.viewModel.dataSeries[0].dataPoints.map(d => d.category)) //Fix this to iterate through things
+                .domain(data.map(d => d.category))
                 .rangeRoundBands([yAxisPadding, width], this.xPadding);
             let xAxis = d3.svg.axis()
                 .scale(xScale)
@@ -167,66 +262,123 @@ module powerbi.extensibility.visual.barChartBBB7DBA9A1C741B7A4FE47AD4699A7BA  {
                     "font-size": "x-small"
                 });
             //Create Bars
-            for (let i = 0, len = this.viewModel.dataSeries.length; i < len; i++) {
-                let bars = this.barGroup
-                    .selectAll(".bar")
-                    .data(this.viewModel.dataSeries[i].dataPoints);
-                bars.enter()
-                    .append("rect")
-                    .classed("bar", true);
-                bars
-                    .attr({
-                        width: xScale.rangeBand() / len,
-                        height: d => height - yScale(d.value) - xAxisPadding,
-                        y: d => yScale(d.value),
-                        x: d => xScale(d.category) + (xScale.rangeBand() / len)*i
-                    })
-                    .style({
-                        fill: d => d.colour,
-                        "fill-opacity": d => this.viewModel.highlights ? d.highlighted ? 1.0 : 0.5 : 1.0
-                    })
-                    .on("click", (d) => {
-                        this.selectionManager.select(d.identity, true)
-                            .then(ids => {
-                                bars.style({
-                                    "fill-opacity": ids.length > 0 ?
-                                        d => ids.indexOf(d.identity) >= 0 ? 1.0 : 0.5
-                                        : 1.0
-                                })
-                            })
-                    })
-                    .on("mouseover", (d) => {
-                        let mouse = d3.mouse(this.svg.node());
-                        let x = mouse[0];
-                        let y = mouse[1];
-
-                        this.host.tooltipService.show({
-                            dataItems: d.tooltips,
-                            identities: [d.identity],
-                            coordinates: [x, y],
-                            isTouchEvent: false
-                        });
-                    });
-
-                bars.exit()
-                    .remove();
-
+            let bars = this.barGroup
+                .selectAll(".bar")
+                .data(data);
+            bars.enter()
+                .append("rect")
+                .classed("bar", true);
+            if (this.settings.colouring.active.value) {
+                let colour = "#000000"
+                for (let i = 0, len = data.length; i < len; i++) {
+                    if (data[i].value > this.settings.colouring.thresholds.second.value) {
+                        data[i].colour = this.settings.colouring.colours.colour2.value;
+                    } else if (data[i].value > this.settings.colouring.thresholds.first.value) {
+                        data[i].colour = this.settings.colouring.colours.colour1.value;
+                    } else {
+                        data[i].colour = this.settings.colouring.colours.baseColour.value;
+                    }
+                }
             }
+            bars
+                .attr({
+                    width: xScale.rangeBand(),
+                    height: d => height - yScale(d.value) - xAxisPadding,
+                    y: d => yScale(d.value),
+                    x: d => xScale(d.category)
+                })
+                .style({
+                    fill: d => d.colour,
+                    "fill-opacity": d => this.viewModel.highlights ? d.highlighted ? 1.0 : 0.5 : 1.0
+                })
+                .on("click", (d) => {
+                    this.selectionManager.select(d.identity, true)
+                        .then(ids => {
+                            bars.style({
+                                "fill-opacity": ids.length > 0 ?
+                                    d => ids.indexOf(d.identity) >= 0 ? 1.0 : 0.5
+                                    : 1.0
+                            })
+                        })
+                })
+                .on("mouseover", (d) => {
+                    let mouse = d3.mouse(this.svg.node());
+                    let x = mouse[0];
+                    let y = mouse[1];
+
+                    this.host.tooltipService.show({
+                        dataItems: d.tooltips,
+                        identities: [d.identity],
+                        coordinates: [x, y],
+                        isTouchEvent: false
+                    });
+                });
+
+            bars.exit()
+                .remove();
         }
 
         private updateSettings(options: VisualUpdateOptions) {
             this.settings.axis.x.show.value = DataViewObjects.getValue(
                 options.dataViews[0].metadata.objects, {
-                    objectName: "xAxis",
-                    propertyName: "show"
+                    objectName: "Axes",
+                    propertyName: "xShow"
                 },
                 this.settings.axis.x.show.default);
             this.settings.axis.y.show.value = DataViewObjects.getValue(
                 options.dataViews[0].metadata.objects, {
-                    objectName: "yAxis",
-                    propertyName: "show"
+                    objectName: "Axes",
+                    propertyName: "yShow"
                 },
                 this.settings.axis.y.show.default);
+            this.settings.axis.y.scaling.value = DataViewObjects.getValue(
+                options.dataViews[0].metadata.objects, {
+                    objectName: "Axes",
+                    propertyName: "scaling"
+                },
+                this.settings.axis.y.show.default);
+            this.settings.colouring.active.value = DataViewObjects.getValue(
+                options.dataViews[0].metadata.objects, {
+                    objectName: "ColourSettings",
+                    propertyName: "show"
+                },
+                this.settings.colouring.active.default);
+            this.settings.colouring.thresholds.first.value = DataViewObjects.getCommonValue(
+                options.dataViews[0].metadata.objects, {
+                    objectName: "ColourSettings",
+                    propertyName: "threshold1"
+                },
+                this.settings.colouring.thresholds.first.default);
+            this.settings.colouring.thresholds.second.value = DataViewObjects.getCommonValue(
+                options.dataViews[0].metadata.objects, {
+                    objectName: "ColourSettings",
+                    propertyName: "threshold2"
+                },
+                this.settings.colouring.thresholds.second.default);
+            this.settings.colouring.colours.baseColour.value = DataViewObjects.getFillColor(
+                options.dataViews[0].metadata.objects, {
+                    objectName: "ColourSettings",
+                    propertyName: "colour0"
+                },
+                this.settings.colouring.colours.baseColour.default);
+            this.settings.colouring.colours.colour1.value = DataViewObjects.getFillColor(
+                options.dataViews[0].metadata.objects, {
+                    objectName: "ColourSettings",
+                    propertyName: "colour1"
+                },
+                this.settings.colouring.colours.colour1.default);
+            this.settings.colouring.colours.colour2.value = DataViewObjects.getFillColor(
+                options.dataViews[0].metadata.objects, {
+                    objectName: "ColourSettings",
+                    propertyName: "colour2"
+                },
+                this.settings.colouring.colours.colour2.default);
+            this.settings.outliers.removed.value = DataViewObjects.getValue(
+                options.dataViews[0].metadata.objects, {
+                    objectName: "outliers",
+                    propertyName: "show"
+                },
+                this.settings.colouring.active.default);
         }
 
         //Gets data from Power BI and returns it in a viewModel
@@ -235,7 +387,7 @@ module powerbi.extensibility.visual.barChartBBB7DBA9A1C741B7A4FE47AD4699A7BA  {
             let dv = options.dataViews;
             //Create empty viewModel to return
             let viewModel: ViewModel = {
-                dataSeries: [],
+                dataPoints: [],
                 maxValue: 0,
                 highlights: false
             };
@@ -250,53 +402,40 @@ module powerbi.extensibility.visual.barChartBBB7DBA9A1C741B7A4FE47AD4699A7BA  {
 
             let view = dv[0].categorical;
             let categories = view.categories[0];
-            let values = view.values;
+            let values = view.values[0];
+            let highlights = values.highlights;
             let objects = categories.objects;
             let metadata = dv[0].metadata;
             let categoryColumnName = metadata.columns.filter(c => c.roles["Axis"])[0].displayName;
-            for (let j = 0, len = Math.max(view.categories.length, values.length); j < len; j++) {
-                let highlights = values[j].highlights;
-                let valueColumnName = metadata.columns.filter(c => c.roles["Values"])[j].displayName;
+            let valueColumnName = metadata.columns.filter(c => c.roles["Values"])[0].displayName;
 
-                viewModel.dataSeries[j] = {
-                    dataPoints: [],
-                    colours: objects && objects[j] && DataViewObjects.getFillColor(objects[j], {
+            for (let i = 0, len = Math.max(categories.values.length, values.values.length); i < len; i++) {
+                viewModel.dataPoints.push({
+                    category: <string>categories.values[i],
+                    value: <number>values.values[i],
+                    colour: objects && objects[i] && DataViewObjects.getFillColor(objects[i], {
                         objectName: "Colours",
                         propertyName: "fill"
-                    }, null) || this.host.colorPalette.getColor(<string>categories.values[j]).value,
+                    }, null) || this.host.colorPalette.getColor(<string>categories.values[i]).value,
+
                     identity: this.host.createSelectionIdBuilder()
-                        .withCategory(categories, j)
+                        .withCategory(categories, i)
                         .createSelectionId(),
-                    name: <string>valueColumnName
-                }
+                    highlighted: highlights ? highlights[i] ? true : false : false,
 
-                for (let i = 0, len = Math.max(categories.values.length, values[j].values.length); i < len; i++) {
-                    viewModel.dataSeries[j].dataPoints.push({
-                        category: <string>categories.values[i],
-                        value: <number>values[j].values[i],
-                        colour: viewModel.dataSeries[j].colours,
-
-                        identity: this.host.createSelectionIdBuilder()
-                            .withCategory(categories, i)
-                            .createSelectionId(),
-                        highlighted: highlights ? highlights[i] ? true : false : false,
-
-                        tooltips: [{
-                            displayName: categoryColumnName,
-                            value: <string>categories.values[i]
-                        },
-                        {
-                            displayName: valueColumnName,
-                            value: (<number>values[j].values[i]).toFixed(2)
-                        }]
-                    })
-                }
-
-                viewModel.maxValue = d3.max(viewModel.dataSeries[j].dataPoints, d => d.value);
-                viewModel.highlights = viewModel.dataSeries[j].dataPoints.filter(d => d.highlighted).length > 0;
-
+                    tooltips: [{
+                        displayName: categoryColumnName,
+                        value: <string>categories.values[i]
+                    },
+                    {
+                        displayName: valueColumnName,
+                        value: (<number>values.values[i]).toFixed(2)
+                    }]
+                })
             }
 
+            viewModel.maxValue = d3.max(viewModel.dataPoints, d => d.value);
+            viewModel.highlights = viewModel.dataPoints.filter(d => d.highlighted).length > 0;
 
             return viewModel;
         }
@@ -315,37 +454,53 @@ module powerbi.extensibility.visual.barChartBBB7DBA9A1C741B7A4FE47AD4699A7BA  {
             let properties: VisualObjectInstance[] = [];
 
             switch (propertyGroupName) {
-                case "xAxis":
+                case "Axes":
                     properties.push({
                         objectName: propertyGroupName,
                         properties: {
-                            show: this.settings.axis.x.show.value
+                            xShow: this.settings.axis.x.show.value,
+                            yShow: this.settings.axis.y.show.value,
+                            scaling: this.settings.axis.y.scaling.value
                         },
                         selector: null
                     });
                     break;
-                case "yAxis":
+                case "ColourSettings":
                     properties.push({
                         objectName: propertyGroupName,
                         properties: {
-                            show: this.settings.axis.y.show.value
+                            show: this.settings.colouring.active.value,
+                            colour0: this.settings.colouring.colours.baseColour.value,
+                            threshold1: this.settings.colouring.thresholds.first.value,
+                            colour1: this.settings.colouring.colours.colour1.value,
+                            threshold2: this.settings.colouring.thresholds.second.value,
+                            colour2: this.settings.colouring.colours.colour2.value
                         },
                         selector: null
                     });
                     break;
                 case "Colours":
                     if (this.viewModel) {
-                        for (let dp of this.viewModel.dataSeries) {
+                        for (let dp of this.viewModel.dataPoints) {
                             properties.push({
                                 objectName: propertyGroupName,
-                                displayName: dp.name,
+                                displayName: dp.category,
                                 properties: {
-                                    fill: dp.colours
+                                    fill: dp.colour
                                 },
                                 selector: dp.identity.getSelector()
                             })
                         }
                     }
+                    break;
+                case "outliers":
+                    properties.push({
+                        objectName: propertyGroupName,
+                        properties: {
+                            show: this.settings.outliers.removed.value
+                        },
+                        selector: null
+                    });
                     break;
             };
 

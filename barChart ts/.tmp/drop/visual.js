@@ -641,6 +641,10 @@ var powerbi;
                                     show: {
                                         default: true,
                                         value: true
+                                    },
+                                    scaling: {
+                                        default: false,
+                                        value: true
                                     }
                                 }
                             },
@@ -648,6 +652,42 @@ var powerbi;
                                 top: {
                                     default: 10,
                                     value: 10
+                                }
+                            },
+                            colouring: {
+                                active: {
+                                    default: false,
+                                    value: false
+                                },
+                                thresholds: {
+                                    first: {
+                                        default: 0,
+                                        value: 0
+                                    },
+                                    second: {
+                                        default: 0,
+                                        value: 0
+                                    }
+                                },
+                                colours: {
+                                    baseColour: {
+                                        default: "#FD625E",
+                                        value: "#FD625E"
+                                    },
+                                    colour1: {
+                                        default: "#F2C80F",
+                                        value: "#F2C80F"
+                                    },
+                                    colour2: {
+                                        default: "#01B8AA",
+                                        value: "#01B8AA"
+                                    }
+                                }
+                            },
+                            outliers: {
+                                removed: {
+                                    default: false,
+                                    value: false
                                 }
                             }
                         };
@@ -668,6 +708,8 @@ var powerbi;
                         this.updateSettings(options);
                         //Get data from viewModel
                         this.viewModel = this.getViewModel(options);
+                        var data = this.viewModel.dataPoints;
+                        var maxValue = this.viewModel.maxValue;
                         var width = options.viewport.width;
                         var height = options.viewport.height;
                         var xAxisPadding = this.settings.axis.x.show.value ? this.settings.axis.x.padding.value : 0;
@@ -676,10 +718,71 @@ var powerbi;
                             width: width,
                             height: height
                         });
+                        if (this.settings.outliers.removed.value) {
+                            //2 standard deviations:
+                            //Find mean
+                            //subtract mean from each value and square result
+                            //find mean of new values
+                            //sqrt that mean
+                            //multiply by 2
+                            var total = 0;
+                            var average = 0;
+                            var deviation = 0;
+                            for (var i = 0, len = data.length; i < len; i++) {
+                                total = total + data[i].value;
+                            }
+                            average = total / data.length;
+                            total = 0;
+                            for (var i = 0, len = data.length; i < len; i++) {
+                                var temp = data[i].value - average;
+                                var variance = temp * temp;
+                                total = total + variance;
+                            }
+                            deviation = total / data.length;
+                            deviation = Math.sqrt(deviation);
+                            for (var i = 0, len = data.length; i < len; i++) {
+                                if (data[i].value < (average - (deviation)) || data[i].value > (average + (deviation))) {
+                                    data.splice(i, 1);
+                                    i--;
+                                    len--;
+                                }
+                            }
+                            var max = 0;
+                            for (var i = 0, len = data.length; i < len; i++) {
+                                if (data[i].value > max) {
+                                    max = data[i].value;
+                                    maxValue = max;
+                                }
+                            }
+                        }
                         //Define scaling behavious to map chart co-ordinates to screen co-ordinates, and creating axes
                         var yScale = d3.scale.linear()
-                            .domain([0, this.viewModel.maxValue])
+                            .domain([0, maxValue])
                             .range([height - xAxisPadding, 0 + this.settings.border.top.value]);
+                        if (this.settings.axis.y.scaling.value) {
+                            var min = 0;
+                            var max = 0;
+                            var domainmin = 0;
+                            var diff = 0;
+                            for (var i = 0, len = data.length; i < len; i++) {
+                                if (i == 0) {
+                                    min = data[i].value;
+                                }
+                                if (data[i].value < min) {
+                                    min = data[i].value;
+                                }
+                                if (data[i].value > max) {
+                                    max = data[i].value;
+                                }
+                            }
+                            diff = max - min;
+                            if (diff < (min / 2)) {
+                                domainmin = min - (diff / 2);
+                                yScale = d3.scale.linear()
+                                    .domain([0 + domainmin, maxValue + (diff / 2)])
+                                    .range([height - xAxisPadding, 0 + this.settings.border.top.value]);
+                            }
+                        }
                         var yAxis = d3.svg.axis()
                             .scale(yScale)
                             .orient("left")
@@ -698,7 +801,7 @@ var powerbi;
                             "font-size": "x-small"
                         });
                         var xScale = d3.scale.ordinal()
-                            .domain(this.viewModel.dataSeries[0].dataPoints.map(function (d) { return d.category; })) //Fix this to iterate through things
+                            .domain(data.map(function (d) { return d.category; }))
                             .rangeRoundBands([yAxisPadding, width], this.xPadding);
                         var xAxis = d3.svg.axis()
                             .scale(xScale)
@@ -720,70 +823,110 @@ var powerbi;
                             "text-anchor": "end",
                             "font-size": "x-small"
                         });
-                        var _loop_1 = function (i, len) {
-                            var bars = this_1.barGroup
-                                .selectAll(".bar")
-                                .data(this_1.viewModel.dataSeries[i].dataPoints);
-                            bars.enter()
-                                .append("rect")
-                                .classed("bar", true);
-                            bars
-                                .attr({
-                                width: xScale.rangeBand() / len,
-                                height: function (d) { return height - yScale(d.value) - xAxisPadding; },
-                                y: function (d) { return yScale(d.value); },
-                                x: function (d) { return xScale(d.category) + (xScale.rangeBand() / len) * i; }
-                            })
-                                .style({
-                                fill: function (d) { return d.colour; },
-                                "fill-opacity": function (d) { return _this.viewModel.highlights ? d.highlighted ? 1.0 : 0.5 : 1.0; }
-                            })
-                                .on("click", function (d) {
-                                _this.selectionManager.select(d.identity, true)
-                                    .then(function (ids) {
-                                    bars.style({
-                                        "fill-opacity": ids.length > 0 ?
-                                            function (d) { return ids.indexOf(d.identity) >= 0 ? 1.0 : 0.5; }
-                                            : 1.0
-                                    });
-                                });
-                            })
-                                .on("mouseover", function (d) {
-                                var mouse = d3.mouse(_this.svg.node());
-                                var x = mouse[0];
-                                var y = mouse[1];
-                                _this.host.tooltipService.show({
-                                    dataItems: d.tooltips,
-                                    identities: [d.identity],
-                                    coordinates: [x, y],
-                                    isTouchEvent: false
+                        //Create Bars
+                        var bars = this.barGroup
+                            .selectAll(".bar")
+                            .data(data);
+                        bars.enter()
+                            .append("rect")
+                            .classed("bar", true);
+                        if (this.settings.colouring.active.value) {
+                            var colour = "#000000";
+                            for (var i = 0, len = data.length; i < len; i++) {
+                                if (data[i].value > this.settings.colouring.thresholds.second.value) {
+                                    data[i].colour = this.settings.colouring.colours.colour2.value;
+                                }
+                                else if (data[i].value > this.settings.colouring.thresholds.first.value) {
+                                    data[i].colour = this.settings.colouring.colours.colour1.value;
+                                }
+                                else {
+                                    data[i].colour = this.settings.colouring.colours.baseColour.value;
+                                }
+                            }
+                        }
+                        bars
+                            .attr({
+                            width: xScale.rangeBand(),
+                            height: function (d) { return height - yScale(d.value) - xAxisPadding; },
+                            y: function (d) { return yScale(d.value); },
+                            x: function (d) { return xScale(d.category); }
+                        })
+                            .style({
+                            fill: function (d) { return d.colour; },
+                            "fill-opacity": function (d) { return _this.viewModel.highlights ? d.highlighted ? 1.0 : 0.5 : 1.0; }
+                        })
+                            .on("click", function (d) {
+                            _this.selectionManager.select(d.identity, true)
+                                .then(function (ids) {
+                                bars.style({
+                                    "fill-opacity": ids.length > 0 ?
+                                        function (d) { return ids.indexOf(d.identity) >= 0 ? 1.0 : 0.5; }
+                                        : 1.0
                                 });
                             });
-                            bars.exit()
-                                .remove();
-                        };
-                        var this_1 = this;
-                        //Create Bars
-                        for (var i = 0, len = this.viewModel.dataSeries.length; i < len; i++) {
-                            _loop_1(i, len);
-                        }
+                        })
+                            .on("mouseover", function (d) {
+                            var mouse = d3.mouse(_this.svg.node());
+                            var x = mouse[0];
+                            var y = mouse[1];
+                            _this.host.tooltipService.show({
+                                dataItems: d.tooltips,
+                                identities: [d.identity],
+                                coordinates: [x, y],
+                                isTouchEvent: false
+                            });
+                        });
+                        bars.exit()
+                            .remove();
                     };
                     Visual.prototype.updateSettings = function (options) {
                         this.settings.axis.x.show.value = DataViewObjects.getValue(options.dataViews[0].metadata.objects, {
-                            objectName: "xAxis",
-                            propertyName: "show"
+                            objectName: "Axes",
+                            propertyName: "xShow"
                         }, this.settings.axis.x.show.default);
                         this.settings.axis.y.show.value = DataViewObjects.getValue(options.dataViews[0].metadata.objects, {
-                            objectName: "yAxis",
-                            propertyName: "show"
+                            objectName: "Axes",
+                            propertyName: "yShow"
                         }, this.settings.axis.y.show.default);
+                        this.settings.axis.y.scaling.value = DataViewObjects.getValue(options.dataViews[0].metadata.objects, {
+                            objectName: "Axes",
+                            propertyName: "scaling"
+                        }, this.settings.axis.y.show.default);
+                        this.settings.colouring.active.value = DataViewObjects.getValue(options.dataViews[0].metadata.objects, {
+                            objectName: "ColourSettings",
+                            propertyName: "show"
+                        }, this.settings.colouring.active.default);
+                        this.settings.colouring.thresholds.first.value = DataViewObjects.getCommonValue(options.dataViews[0].metadata.objects, {
+                            objectName: "ColourSettings",
+                            propertyName: "threshold1"
+                        }, this.settings.colouring.thresholds.first.default);
+                        this.settings.colouring.thresholds.second.value = DataViewObjects.getCommonValue(options.dataViews[0].metadata.objects, {
+                            objectName: "ColourSettings",
+                            propertyName: "threshold2"
+                        }, this.settings.colouring.thresholds.second.default);
+                        this.settings.colouring.colours.baseColour.value = DataViewObjects.getFillColor(options.dataViews[0].metadata.objects, {
+                            objectName: "ColourSettings",
+                            propertyName: "colour0"
+                        }, this.settings.colouring.colours.baseColour.default);
+                        this.settings.colouring.colours.colour1.value = DataViewObjects.getFillColor(options.dataViews[0].metadata.objects, {
+                            objectName: "ColourSettings",
+                            propertyName: "colour1"
+                        }, this.settings.colouring.colours.colour1.default);
+                        this.settings.colouring.colours.colour2.value = DataViewObjects.getFillColor(options.dataViews[0].metadata.objects, {
+                            objectName: "ColourSettings",
+                            propertyName: "colour2"
+                        }, this.settings.colouring.colours.colour2.default);
+                        this.settings.outliers.removed.value = DataViewObjects.getValue(options.dataViews[0].metadata.objects, {
+                            objectName: "outliers",
+                            propertyName: "show"
+                        }, this.settings.colouring.active.default);
                     };
                     //Gets data from Power BI and returns it in a viewModel
                     Visual.prototype.getViewModel = function (options) {
                         var dv = options.dataViews;
                         //Create empty viewModel to return
                         var viewModel = {
-                            dataSeries: [],
+                            dataPoints: [],
                             maxValue: 0,
                             highlights: false
                         };
@@ -797,46 +940,36 @@ var powerbi;
                             return viewModel;
                         var view = dv[0].categorical;
                         var categories = view.categories[0];
-                        var values = view.values;
+                        var values = view.values[0];
+                        var highlights = values.highlights;
                         var objects = categories.objects;
                         var metadata = dv[0].metadata;
                         var categoryColumnName = metadata.columns.filter(function (c) { return c.roles["Axis"]; })[0].displayName;
-                        for (var j = 0, len = Math.max(view.categories.length, values.length); j < len; j++) {
-                            var highlights = values[j].highlights;
-                            var valueColumnName = metadata.columns.filter(function (c) { return c.roles["Values"]; })[j].displayName;
-                            viewModel.dataSeries[j] = {
-                                dataPoints: [],
-                                colours: objects && objects[j] && DataViewObjects.getFillColor(objects[j], {
+                        var valueColumnName = metadata.columns.filter(function (c) { return c.roles["Values"]; })[0].displayName;
+                        for (var i = 0, len = Math.max(categories.values.length, values.values.length); i < len; i++) {
+                            viewModel.dataPoints.push({
+                                category: categories.values[i],
+                                value: values.values[i],
+                                colour: objects && objects[i] && DataViewObjects.getFillColor(objects[i], {
                                     objectName: "Colours",
                                     propertyName: "fill"
-                                }, null) || this.host.colorPalette.getColor(categories.values[j]).value,
+                                }, null) || this.host.colorPalette.getColor(categories.values[i]).value,
                                 identity: this.host.createSelectionIdBuilder()
-                                    .withCategory(categories, j)
+                                    .withCategory(categories, i)
                                     .createSelectionId(),
-                                name: valueColumnName
-                            };
-                            for (var i = 0, len_1 = Math.max(categories.values.length, values[j].values.length); i < len_1; i++) {
-                                viewModel.dataSeries[j].dataPoints.push({
-                                    category: categories.values[i],
-                                    value: values[j].values[i],
-                                    colour: viewModel.dataSeries[j].colours,
-                                    identity: this.host.createSelectionIdBuilder()
-                                        .withCategory(categories, i)
-                                        .createSelectionId(),
-                                    highlighted: highlights ? highlights[i] ? true : false : false,
-                                    tooltips: [{
-                                            displayName: categoryColumnName,
-                                            value: categories.values[i]
-                                        },
-                                        {
-                                            displayName: valueColumnName,
-                                            value: values[j].values[i].toFixed(2)
-                                        }]
-                                });
-                            }
-                            viewModel.maxValue = d3.max(viewModel.dataSeries[j].dataPoints, function (d) { return d.value; });
-                            viewModel.highlights = viewModel.dataSeries[j].dataPoints.filter(function (d) { return d.highlighted; }).length > 0;
+                                highlighted: highlights ? highlights[i] ? true : false : false,
+                                tooltips: [{
+                                        displayName: categoryColumnName,
+                                        value: categories.values[i]
+                                    },
+                                    {
+                                        displayName: valueColumnName,
+                                        value: values.values[i].toFixed(2)
+                                    }]
+                            });
                         }
+                        viewModel.maxValue = d3.max(viewModel.dataPoints, function (d) { return d.value; });
+                        viewModel.highlights = viewModel.dataPoints.filter(function (d) { return d.highlighted; }).length > 0;
                         return viewModel;
                     };
                     Visual.parseSettings = function (dataView) {
@@ -851,38 +984,54 @@ var powerbi;
                         var propertyGroupName = options.objectName;
                         var properties = [];
                         switch (propertyGroupName) {
-                            case "xAxis":
+                            case "Axes":
                                 properties.push({
                                     objectName: propertyGroupName,
                                     properties: {
-                                        show: this.settings.axis.x.show.value
+                                        xShow: this.settings.axis.x.show.value,
+                                        yShow: this.settings.axis.y.show.value,
+                                        scaling: this.settings.axis.y.scaling.value
                                     },
                                     selector: null
                                 });
                                 break;
-                            case "yAxis":
+                            case "ColourSettings":
                                 properties.push({
                                     objectName: propertyGroupName,
                                     properties: {
-                                        show: this.settings.axis.y.show.value
+                                        show: this.settings.colouring.active.value,
+                                        colour0: this.settings.colouring.colours.baseColour.value,
+                                        threshold1: this.settings.colouring.thresholds.first.value,
+                                        colour1: this.settings.colouring.colours.colour1.value,
+                                        threshold2: this.settings.colouring.thresholds.second.value,
+                                        colour2: this.settings.colouring.colours.colour2.value
                                     },
                                     selector: null
                                 });
                                 break;
                             case "Colours":
                                 if (this.viewModel) {
-                                    for (var _i = 0, _a = this.viewModel.dataSeries; _i < _a.length; _i++) {
+                                    for (var _i = 0, _a = this.viewModel.dataPoints; _i < _a.length; _i++) {
                                         var dp = _a[_i];
                                         properties.push({
                                             objectName: propertyGroupName,
-                                            displayName: dp.name,
+                                            displayName: dp.category,
                                             properties: {
-                                                fill: dp.colours
+                                                fill: dp.colour
                                             },
                                             selector: dp.identity.getSelector()
                                         });
                                     }
                                 }
+                                break;
+                            case "outliers":
+                                properties.push({
+                                    objectName: propertyGroupName,
+                                    properties: {
+                                        show: this.settings.outliers.removed.value
+                                    },
+                                    selector: null
+                                });
                                 break;
                         }
                         ;
@@ -901,8 +1050,8 @@ var powerbi;
     (function (visuals) {
         var plugins;
         (function (plugins) {
-            plugins.barChartBBB7DBA9A1C741B7A4FE47AD4699A7BA_DEBUG = {
-                name: 'barChartBBB7DBA9A1C741B7A4FE47AD4699A7BA_DEBUG',
+            plugins.barChartBBB7DBA9A1C741B7A4FE47AD4699A7BA = {
+                name: 'barChartBBB7DBA9A1C741B7A4FE47AD4699A7BA',
                 displayName: 'barChart',
                 class: 'Visual',
                 version: '1.0.0',
