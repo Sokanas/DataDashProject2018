@@ -65,6 +65,13 @@
                         "bool": true
                     }
                 },
+                "showMajorTicksOnly": {
+                    "displayName": "Show Major Ticks only",
+                    "displayNameKey": "showMajorTicksOnly",
+                    "type": {
+                        "bool": true
+                    }
+                },
                 "tickSize": {
                     "displayName": "Tick Size",
                     "displayNameKey": "tickSize",

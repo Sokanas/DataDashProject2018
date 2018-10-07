@@ -15,5 +15,9 @@
         "tslint": "4.4.2",
         "tslint-microsoft-contrib": "4.0.0",
         "powerbi-visuals-utils-dataviewutils": "^1.4.1"
+    },
+    "dependencies": {
+        "powerbi-visuals-utils-colorutils": "^1.1.0",
+        "powerbi-visuals-utils-typeutils": "^1.1.0"
     }
 }

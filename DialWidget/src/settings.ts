@@ -7,16 +7,17 @@ module powerbi.extensibility.visual
     import VisualUpdateOptions = powerbi.extensibility.visual.VisualUpdateOptions;   
 
     export class LabelSettings{
-        labelSize: number = 10;
+        labelSize: number = 20;
         labelColor: string = "black";
         showMinMax: boolean = true;
         tickSize: number = 2;
         showTicks: boolean = true;
+        showMajorTicksOnly: boolean = false;
         tickColor: string = "white";
     }
 
     export class TargetSettings{
-        targetTextSize: number = 10;
+        targetTextSize: number = 13;
         targetColor: string = "red";
         showTarget: boolean = true;
         targetLineSize: number = 10;
@@ -24,7 +25,7 @@ module powerbi.extensibility.visual
     }
 
     export class DialSettings{
-        dialValueSize: number = 10;
+        dialValueSize: number = 20;
         dialColor: string = "orange";
         dialSize: number = 8;
         minimumValue: number = 0;
