@@ -43,7 +43,6 @@ module powerbi.extensibility.visual {
         private scaleRange: number;
         private maxValue: number;
         private minValue: number;
-        private Value: number;
         private Target: number;
 
         private majorTickClass: string;
@@ -121,10 +120,10 @@ module powerbi.extensibility.visual {
             this.majorTickLength = 25;
             this.minorTickLength = 12.5;
 
-            this.Value = 66;    //Pull this from bound data!!!
+            //this.Value = 66;    //Pull this from bound data!!!
             this.Target = 80;
             //    DialChart.e.innerHTML = "ctor ok";
-
+            this.selectionManager = this.host.createSelectionManager();
             this.colorPalette = this.host.colorPalette;
         }
 
@@ -140,7 +139,7 @@ module powerbi.extensibility.visual {
             let viewModel: DialViewModel = this.visualTransform(options, this.host);
             //DialChart.e.innerHTML += "<br/>viewmodel ok";
             this.data = viewModel;
-            this.Value = viewModel.measure;
+            //this.Value = viewModel.measures;
             let c = this.colorPalette;
             //this.Value = this.dialDataPoints.value;
 
@@ -272,10 +271,140 @@ module powerbi.extensibility.visual {
             }
 
             //4. Draw the 'Needle'
-            this.drawValueNeedle(this.valToPerc(this.data.measure),
-                this.data.settings.DialSettings.dialColor,
-                this.data.settings.DialSettings.dialSize,
-                this.dialNeedleClass, 20);
+            /**
+             *  NOTE: DUE TO LIMITATIONS IN POWERBI WE CAN'T RUN LOOPS
+             *  AT LEAST NOT CURRENTLY. THEREFORE WE NEED TO INCREMENT 
+             *  THROUGH ALL THE CASES. WE ARE SUPPORTING A MAX OF 5
+             *  CATEGORIES / SERIES.
+             */
+            var legendStart = 5;
+            var legendIncrement = 15;
+            var legendEnd = legendStart;
+
+            if (this.data.measures.length >= 1) {
+                this.drawValueNeedle(this.valToPerc(this.data.measures[0].value),
+                    this.data.measures[0].color,
+                    this.data.settings.DialSettings.dialSize,
+                    this.dialNeedleClass, 20);
+
+
+                var circleRadius = 5;
+                this.svg.append("circle")
+                    .attr("r", circleRadius)
+                    .attr("cy", legendEnd)
+                    .attr("cx", 5)
+                    .attr("fill", this.data.measures[0].color)
+                    .attr("class", name);
+
+                this.svg.append("text")
+                    .attr("x", 14)
+                    .attr("y", legendEnd)
+                    .attr("font-family", "sans-serif")
+                    .attr("font-size", "10px")
+                    .attr("fill", this.data.settings.LabelSettings.labelColor)
+                    .text(this.data.measures[0].category);
+                legendEnd += legendIncrement;
+            }
+
+            if (this.data.measures.length >= 2) {
+                this.drawValueNeedle(this.valToPerc(this.data.measures[1].value),
+                    this.data.measures[1].color,
+                    this.data.settings.DialSettings.dialSize,
+                    this.dialNeedleClass, 20);
+
+
+                var circleRadius = 5;
+                this.svg.append("circle")
+                    .attr("r", circleRadius)
+                    .attr("cy", legendEnd)
+                    .attr("cx", 5)
+                    .attr("fill", this.data.measures[1].color)
+                    .attr("class", name);
+
+                this.svg.append("text")
+                    .attr("x", 14)
+                    .attr("y", legendEnd)
+                    .attr("font-family", "sans-serif")
+                    .attr("font-size", "10px")
+                    .attr("fill", this.data.settings.LabelSettings.labelColor)
+                    .text(this.data.measures[1].category);
+                legendEnd += legendIncrement;
+            }
+
+            if (this.data.measures.length >= 3) {
+                this.drawValueNeedle(this.valToPerc(this.data.measures[2].value),
+                    this.data.measures[2].color,
+                    this.data.settings.DialSettings.dialSize,
+                    this.dialNeedleClass, 20);
+
+
+                var circleRadius = 5;
+                this.svg.append("circle")
+                    .attr("r", circleRadius)
+                    .attr("cy", legendEnd)
+                    .attr("cx", 5)
+                    .attr("fill", this.data.measures[2].color)
+                    .attr("class", name);
+
+                this.svg.append("text")
+                    .attr("x", 14)
+                    .attr("y", legendEnd)
+                    .attr("font-family", "sans-serif")
+                    .attr("font-size", "10px")
+                    .attr("fill", this.data.settings.LabelSettings.labelColor)
+                    .text(this.data.measures[2].category);
+                legendEnd += legendIncrement;
+            }
+
+            if (this.data.measures.length >= 4) {
+                this.drawValueNeedle(this.valToPerc(this.data.measures[3].value),
+                    this.data.measures[3].color,
+                    this.data.settings.DialSettings.dialSize,
+                    this.dialNeedleClass, 20);
+
+
+                var circleRadius = 5;
+                this.svg.append("circle")
+                    .attr("r", circleRadius)
+                    .attr("cy", legendEnd)
+                    .attr("cx", 5)
+                    .attr("fill", this.data.measures[3].color)
+                    .attr("class", name);
+
+                this.svg.append("text")
+                    .attr("x", 14)
+                    .attr("y", legendEnd)
+                    .attr("font-family", "sans-serif")
+                    .attr("font-size", "10px")
+                    .attr("fill", this.data.settings.LabelSettings.labelColor)
+                    .text(this.data.measures[3].category);
+                legendEnd += legendIncrement;
+            }
+
+            if (this.data.measures.length >= 5) {
+                this.drawValueNeedle(this.valToPerc(this.data.measures[4].value),
+                    this.data.measures[4].color,
+                    this.data.settings.DialSettings.dialSize,
+                    this.dialNeedleClass, 20);
+
+
+                var circleRadius = 5;
+                this.svg.append("circle")
+                    .attr("r", circleRadius)
+                    .attr("cy", legendEnd)
+                    .attr("cx", 5)
+                    .attr("fill", this.data.measures[4].color)
+                    .attr("class", name);
+
+                this.svg.append("text")
+                    .attr("x", 14)
+                    .attr("y", legendEnd)
+                    .attr("font-family", "sans-serif")
+                    .attr("font-size", "10px")
+                    .attr("fill", this.data.settings.LabelSettings.labelColor)
+                    .text(this.data.measures[4].category);
+                legendEnd += legendIncrement;
+            }
             //
             //  Any Other needles would go here - or a function that could push them into here
             //
@@ -296,7 +425,10 @@ module powerbi.extensibility.visual {
                 this.drawMinMaxLabel();
             }
 
-            this.drawValueLabel();
+
+            //Value Label not suitable for multiple records
+            //this.drawValueLabel();
+            //DialChart.e.innerHTML += this.data.measures.length;
         }
 
         /**
@@ -569,7 +701,7 @@ module powerbi.extensibility.visual {
 
             var vrot = 37.8;        //Rotate needle right by 37.5 units
             var v = value;
-            
+
             v += vrot;
             v = cscale(v);
 
@@ -633,7 +765,7 @@ module powerbi.extensibility.visual {
                 .attr("font-family", "sans-serif")
                 .attr("font-size", fontsize)
                 .attr("fill", this.data.settings.LabelSettings.labelColor)
-                .text(this.Value);
+                .text("BLUE");
         }
 
 
@@ -724,17 +856,64 @@ module powerbi.extensibility.visual {
          * @param {IVisualHost} host            - Contains references to the host which contains services
          */
         private visualTransform(options: VisualUpdateOptions, host: IVisualHost): DialViewModel {
-            let dataViews = options.dataViews[0];
+            //let dataViews = options.dataViews[0];
             let defaultSettings: DialChartSettings = new DialChartSettings();
+            let dv = options.dataViews
+            //DialChart.e.innerHTML = "visualtransform start<br/>";
 
             let viewModel: DialViewModel = {
-                measure: 0,
-                settings: defaultSettings
+                measures: [],
+                settings: defaultSettings,
+                highlights: false
             };
 
-            let dv = options.dataViews[0];
-            viewModel.measure = dv.single.value as number;
+            //DialChart.e.innerHTML += "visualtransform constructor ok , checking if dataview ok<br/>";
 
+            //Data
+            if (    !dv
+                ||  !dv[0]
+                ||  !dv[0].categorical
+                ||  !dv[0].categorical.categories
+                ||  !dv[0].categorical.categories[0].source
+                ||  !dv[0].categorical.values)
+            return viewModel;
+            
+                
+            //DialChart.e.innerHTML += "visualtransform data view contains categories<br/>";
+            let view = dv[0].categorical;
+            let categories = view.categories[0];
+            let values = view.values[0];
+            let highlights = values.highlights;
+            let objects = categories.objects;
+            let metadata = dv[0].metadata;
+            let categoryColumnName = metadata.columns.filter(c => c.roles["CAT"])[0].displayName;
+            let valueColumnName = metadata.columns.filter(c => c.roles["VAL"])[0].displayName;
+
+            //DialChart.e.innerHTML += "populated the things<br/>";
+            //Build the Measures Array
+            for (let i = 0, len = Math.max(categories.values.length, values.values.length); i < len; i++) {
+               //DialChart.e.innerHTML += "pushing " + <string>categories.values[i] + " with val of " + <number>values.values[i] + "<br/>";
+                viewModel.measures.push({
+                    category: <string>categories.values[i],
+                    value: <number>values.values[i],
+                    color: this.host.colorPalette.getColor(<string>categories.values[i]).value,
+                    identity: this.host.createSelectionIdBuilder()
+                        .withCategory(categories, i)
+                        .createSelectionId(),
+                    highlighted: highlights ? highlights[i] ? true : false : false,
+                    tooltip: [{
+                        displayName: categoryColumnName,
+                        value: <string>categories.values[i]
+                    },
+                    {
+                        displayName: valueColumnName,
+                        value: (<number>values.values[i]).toFixed(2)
+                    }]
+                });
+            }
+
+            
+            // DialChart.e.innerHTML += "visualtransform settings<br/>";
             //Update the Settings
             if (this.data === null) {
                 return viewModel;
@@ -1046,7 +1225,9 @@ module powerbi.extensibility.visual {
                     console.log(error);
                 }
             }
+            //DialChart.e.innerHTML = "visualtransform good end";
             return viewModel;
         }
+
     }
 }

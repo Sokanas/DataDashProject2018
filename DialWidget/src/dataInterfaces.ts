@@ -9,7 +9,17 @@ module powerbi.extensibility.visual{
      */
     export interface DialViewModel
     {
-        measure: number;
+        measures: DataElement[];
         settings: DialChartSettings;
+        highlights: boolean;
+    }
+
+    export interface DataElement{
+        category: string;
+        value: number;
+        color: string;
+        identity: powerbi.visuals.ISelectionId;
+        highlighted: boolean;
+        tooltip: VisualTooltipDataItem[];
     }
 }
