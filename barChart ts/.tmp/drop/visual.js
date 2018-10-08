@@ -1052,7 +1052,7 @@ var powerbi;
         (function (plugins) {
             plugins.barChartBBB7DBA9A1C741B7A4FE47AD4699A7BA = {
                 name: 'barChartBBB7DBA9A1C741B7A4FE47AD4699A7BA',
-                displayName: 'barChart',
+                displayName: 'Data Dash Bar',
                 class: 'Visual',
                 version: '1.0.0',
                 apiVersion: '1.11.0',

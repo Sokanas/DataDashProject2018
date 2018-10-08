@@ -1,7 +1,7 @@
 {
   "visual": {
-    "name": "barChart",
-    "displayName": "barChart",
+    "name": "DDbarChartts",
+    "displayName": "Data Dash Bar",
     "guid": "barChartBBB7DBA9A1C741B7A4FE47AD4699A7BA",
     "visualClassName": "Visual",
     "version": "1.0.0",
