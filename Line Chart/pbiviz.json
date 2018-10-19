@@ -1,7 +1,7 @@
 {
   "visual": {
-    "name": "LineChart",
-    "displayName": "LineChart",
+    "name": "DDLineChartTS",
+    "displayName": "Data Dash Line",
     "guid": "lineBase7208B18920D946BCB1A3B34BF2CC8FA3",
     "visualClassName": "LineChart",
     "version": "0.0.1",

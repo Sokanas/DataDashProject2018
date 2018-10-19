@@ -1,7 +1,7 @@
 {
   "visual": {
-    "name": "lineChartR",
-    "displayName": "LineChartR",
+    "name": "DataDashlineChartR",
+    "displayName": "Data Dash Line",
     "guid": "lineChartRD902E64560EE4B62A6FFD29B1499B69E",
     "visualClassName": "Visual",
     "version": "1.0.0",

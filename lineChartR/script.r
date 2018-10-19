@@ -7,14 +7,9 @@ libraryRequireInstall("htmlwidgets");
 ####################################################
 
 ################### Actual code ####################
-#Import the data from PowerBI
 dataFrame <- data.frame(Axis, Values[[1]]);
 
-#dataFrame[[1]] <- factor(dataFrame[[1]], levels = dataFrame[[1]]) #Forces data to sort by original order. Turns out to be unnecessary, left commented here in case it becomes useful
-
-#Checking if colour and Threshold Colouring have been set, and setting defaults if not
-lineColour = "#01B8AA";
-#set the colors that can be used in options
+#Setting colour arrays to iterate through for multiple lines, based on each of the default colours
 reds = c("#7f312f","#be4a47","#FD625E","#fd817e","#fea19e","#fec0bf");
 greens = c("#015c55","#018a80","#01B8AA","#34c6bb","#67d4cc","#99e3dd");
 slates = c("#1c2325","#293537","#374649","#5f6b6d","#879092","#afb5b6");
@@ -24,14 +19,12 @@ blues = c("#456a76","#689fb0","#8AD4EB","#a1ddef","#b9e5f3","#d0eef7");
 oranges = c("#7f4b33","#bf714d","#FE9666","#feab85","#fec0a3","#ffd5c2");
 purples = c("#53354d","#7d4f73","#A66999","#b887ad","#caa5c2","#dbc3d6");
 blacks = c("#000000","#1a1a1a","#333333","#4a4a4a","#666666","#999999");
-#coloursAll = c("#FD625E","#01B8AA","#374649","#F2C80F","#5F6B6D","#8AD4EB","#FE9666","#A66999","#333333","#fea19e","#67d4cc","#879092","#f7de6f","#9fa6a7","#b9e5f3","#fec0a3","#caa5c2","#666666","#7f312f","#015c55","#1c2325","#796408","#303637","#456a76","#7f4b33","#53354d","#000000");
+#Checking if colour and Threshold Colouring have been set, and setting defaults if not
+lineColour = "#01B8AA";
 colours = reds;
 colourFound = FALSE;
-thresholdActive = FALSE; # threshold is close in the default property
-legendActive = TRUE; #The default property of the function is true, indicating that the default is to open this option.
-
-#an optional object defining how Class is extended by the class of the object. This argument is used internally
-#the returned object must be strictly from the target class
+thresholdActive = FALSE;
+legendActive = TRUE;
 if(exists("ColourSettings_fill")){
 	lineColour = as.character(ColourSettings_fill);
 }
@@ -43,7 +36,6 @@ if(exists("Legend_legendActive")){
 }
 
 #Setting colours for multiple lines by iterating through the PowerBI presets of the same shade
-#Determine the establishment of coordinates and data in any color case, and initial creation of the graph object
 if(colourFound == FALSE){
 	if(lineColour %in% reds){
 		p <- plot_ly(Values);
@@ -166,12 +158,10 @@ if(thresholdActive){
 		threshold2Colour = "#01B8AA";
 	}
 	
-	#Represents the scope of the thresholds color function call.
 	thresholds <- c(-Inf, threshold1Value, threshold2Value, Inf);
 	
 	#Create lines for thresholds if enabled
 	if(linesActive){
-		# create the first line
 		p <- add_trace(p,
 			x=dataFrame[[1]],
 			y=threshold1Value,
@@ -182,7 +172,6 @@ if(thresholdActive){
 			line = list(color = "#000000"),
 			evaluate = TRUE
 		)
-		# create the second line
 		p <- add_trace(p,
 			x=dataFrame[[1]],
 			y=threshold2Value,
