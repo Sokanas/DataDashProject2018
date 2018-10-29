@@ -29,7 +29,8 @@ import DataViewObjects = powerbi.extensibility.utils.dataview.DataViewObjects;
 module powerbi.extensibility.visual {
     "use strict";
 
-    interface DataPoint { //Contains data imported from Power BI
+    //Contains data imported from Power BI
+    interface DataPoint { 
         category: string;
         value: number;
         colour: string;
@@ -38,7 +39,8 @@ module powerbi.extensibility.visual {
         tooltips: VisualTooltipDataItem[];
     };
 
-    interface ViewModel { //Provides a layer between the data collection and the data manipulation/display, to allow for editing one without having to change the other
+    //Provides a layer between the data collection and the data manipulation/display, to allow for editing one without having to change the other
+    interface ViewModel { 
         dataPoints: DataPoint[];
         maxValue: number;
         highlights: boolean;
@@ -209,7 +211,8 @@ module powerbi.extensibility.visual {
                     }
                 }
                 diff = max - min;
-                if (diff < (min / 2)) { //If Dynamic Scaling is potentially useful (Here defined as all difference between bars being in top 1/3 of graph), apply scale change
+                //If Dynamic Scaling is potentially useful (Here defined as all difference between bars being in top 1/3 of graph), apply scale change
+                if (diff < (min / 2)) { 
                     domainmin = min - (diff / 2);
                     yScale = d3.scale.linear()
                         .domain([0 + domainmin, maxValue + (diff / 2)])

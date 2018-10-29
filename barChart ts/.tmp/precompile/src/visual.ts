@@ -29,7 +29,8 @@ import DataViewObjects = powerbi.extensibility.utils.dataview.DataViewObjects;
 module powerbi.extensibility.visual.barChartBBB7DBA9A1C741B7A4FE47AD4699A7BA  {
     "use strict";
 
-    interface DataPoint {
+    //Contains data imported from Power BI
+    interface DataPoint { 
         category: string;
         value: number;
         colour: string;
@@ -38,7 +39,8 @@ module powerbi.extensibility.visual.barChartBBB7DBA9A1C741B7A4FE47AD4699A7BA  {
         tooltips: VisualTooltipDataItem[];
     };
 
-    interface ViewModel {
+    //Provides a layer between the data collection and the data manipulation/display, to allow for editing one without having to change the other
+    interface ViewModel { 
         dataPoints: DataPoint[];
         maxValue: number;
         highlights: boolean;
@@ -147,7 +149,7 @@ module powerbi.extensibility.visual.barChartBBB7DBA9A1C741B7A4FE47AD4699A7BA  {
             this.viewModel = this.getViewModel(options);
             let data = this.viewModel.dataPoints;
             let maxValue = this.viewModel.maxValue;
-
+            //Define width and height of the area used for the widget, and the padding created by drawing the axes
             let width = options.viewport.width;
             let height = options.viewport.height;
             let xAxisPadding = this.settings.axis.x.show.value ? this.settings.axis.x.padding.value : 0;
@@ -156,13 +158,8 @@ module powerbi.extensibility.visual.barChartBBB7DBA9A1C741B7A4FE47AD4699A7BA  {
                 width: width,
                 height: height
             });
-            if (this.settings.outliers.removed.value) {
-                //2 standard deviations:
-                //Find mean
-                //subtract mean from each value and square result
-                //find mean of new values
-                //sqrt that mean
-                //multiply by 2
+
+            if (this.settings.outliers.removed.value) {//Calculate outliers based on Standard Deviations
                 let total = 0;
                 let average = 0;
                 let deviation = 0;
@@ -197,7 +194,7 @@ module powerbi.extensibility.visual.barChartBBB7DBA9A1C741B7A4FE47AD4699A7BA  {
             let yScale = d3.scale.linear()
                 .domain([0, maxValue])
                 .range([height - xAxisPadding, 0 + this.settings.border.top.value]);
-            if (this.settings.axis.y.scaling.value) {
+            if (this.settings.axis.y.scaling.value) { //If Dynamic Axis Scaling is enabled, calculate how to change the scale
                 let min = 0;
                 let max = 0;
                 let domainmin = 0;
@@ -214,7 +211,8 @@ module powerbi.extensibility.visual.barChartBBB7DBA9A1C741B7A4FE47AD4699A7BA  {
                     }
                 }
                 diff = max - min;
-                if (diff < (min / 2)) {
+                //If Dynamic Scaling is potentially useful (Here defined as all difference between bars being in top 1/3 of graph), apply scale change
+                if (diff < (min / 2)) { 
                     domainmin = min - (diff / 2);
                     yScale = d3.scale.linear()
                         .domain([0 + domainmin, maxValue + (diff / 2)])
@@ -268,7 +266,7 @@ module powerbi.extensibility.visual.barChartBBB7DBA9A1C741B7A4FE47AD4699A7BA  {
             bars.enter()
                 .append("rect")
                 .classed("bar", true);
-            if (this.settings.colouring.active.value) {
+            if (this.settings.colouring.active.value) { //Apply threshold colouring if setting is enabled
                 let colour = "#000000"
                 for (let i = 0, len = data.length; i < len; i++) {
                     if (data[i].value > this.settings.colouring.thresholds.second.value) {
@@ -318,7 +316,8 @@ module powerbi.extensibility.visual.barChartBBB7DBA9A1C741B7A4FE47AD4699A7BA  {
                 .remove();
         }
 
-        private updateSettings(options: VisualUpdateOptions) {
+        //Update settings to match user-given values
+        private updateSettings(options: VisualUpdateOptions) { 
             this.settings.axis.x.show.value = DataViewObjects.getValue(
                 options.dataViews[0].metadata.objects, {
                     objectName: "Axes",

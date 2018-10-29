@@ -1,0 +1,385 @@
+{
+    "dataRoles": [
+        {
+            "displayName": "Measure",
+            "name": "measure",
+            "kind": "Measure",
+            "requiredTypes": [
+                {
+                    "numeric": true
+                },
+                {
+                    "integer": true
+                }
+            ]
+        }
+    ],
+    "dataViewMappings": [
+        {
+            "conditions": [
+                {
+                    "measure": {
+                        "max": 1
+                    }
+                }
+            ],
+            "single": {
+                "role": "measure"
+            }
+        }
+    ],
+    "objects": {
+        "LabelSettings": {
+            "displayName": "Labels",
+            "displayNameKey": "labels",
+            "properties": {
+                "labelSize": {
+                    "displayName": "Label Size",
+                    "displayNameKey": "labelSize",
+                    "type": {
+                        "numeric": true
+                    }
+                },
+                "labelColor": {
+                    "displayName": "Label Colour",
+                    "displayNameKey": "labelColor",
+                    "type": {
+                        "fill": {
+                            "solid": {
+                                "color": true
+                            }
+                        }
+                    }
+                },
+                "showMinMax": {
+                    "displayName": "Show Min / Max Labels",
+                    "displayNameKey": "showMinMax",
+                    "type": {
+                        "bool": true
+                    }
+                },
+                "showTicks": {
+                    "displayName": "Show Tick Marks",
+                    "displayNameKey": "showTicks",
+                    "type": {
+                        "bool": true
+                    }
+                },
+                "showMajorTicksOnly": {
+                    "displayName": "Show Major Ticks only",
+                    "displayNameKey": "showMajorTicksOnly",
+                    "type": {
+                        "bool": true
+                    }
+                },
+                "tickSize": {
+                    "displayName": "Tick Size",
+                    "displayNameKey": "tickSize",
+                    "type": {
+                        "numeric": true
+                    }
+                },
+                "tickColor": {
+                    "displayName": "Tick Colour",
+                    "displayNameKey": "tickColor",
+                    "type": {
+                        "fill": {
+                            "solid": {
+                                "color": true
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "TargetSettings": {
+            "displayName": "Target",
+            "displayNameKey": "target",
+            "properties": {
+                "targetTextSize": {
+                    "displayName": "Target Text Size",
+                    "displayNameKey": "targetTextSize",
+                    "type": {
+                        "numeric": true
+                    }
+                },
+                "targetValue": {
+                    "displayName": "Target Value",
+                    "displayNameKey": "targetValue",
+                    "type": {
+                        "numeric": true
+                    }
+                },
+                "targetLineSize": {
+                    "displayName": "Target Line Size",
+                    "displayNameKey": "targetLineSize",
+                    "type": {
+                        "numeric": true
+                    }
+                },
+                "targetColor": {
+                    "displayName": "Target Colour",
+                    "displayNameKey": "targetColor",
+                    "type": {
+                        "fill": {
+                            "solid": {
+                                "color": true
+                            }
+                        }
+                    }
+                },
+                "showTarget": {
+                    "displayName": "Show Target Value",
+                    "displayNameKey": "showTarget",
+                    "type": {
+                        "bool": true
+                    }
+                }
+            }
+        },
+        "DialSettings": {
+            "displayName": "Dial",
+            "displayNameKey": "dial",
+            "properties": {
+                "dialValueSize": {
+                    "displayName": "Value Size",
+                    "displayNameKey": "dialValueSize",
+                    "type": {
+                        "numeric": true
+                    }
+                },
+                "dialColor": {
+                    "displayName": "Dial Colour",
+                    "displayNameKey": "dialColor",
+                    "type": {
+                        "fill": {
+                            "solid": {
+                                "color": true
+                            }
+                        }
+                    }
+                },
+                "dialSize": {
+                    "displayName": "Dial Needle Size",
+                    "displayNameKey": "dialSize",
+                    "type": {
+                        "numeric": true
+                    }
+                },
+                "maximumValue": {
+                    "displayName": "Dial Max Value",
+                    "displayNameKey": "maximumValue",
+                    "type": {
+                        "numeric": true
+                    }
+                },
+                "minimumValue": {
+                    "displayName": "Dial Min Value",
+                    "displayNameKey": "minimumValue",
+                    "type": {
+                        "numeric": true
+                    }
+                }
+            }
+        },
+        "BandOneSettings": {
+            "displayName": "Band One",
+            "displayNameKey": "bandOne",
+            "properties": {
+                "showBand": {
+                    "displayName": "Show Band",
+                    "displayNameKey": "showBand",
+                    "type": {
+                        "bool": true
+                    }
+                },
+                "bandStart": {
+                    "displayName": "Start Point",
+                    "displayNameKey": "bandStart",
+                    "type": {
+                        "numeric": true
+                    }
+                },
+                "bandEnd": {
+                    "displayName": "End Point",
+                    "displayNameKey": "bandEnd",
+                    "type": {
+                        "numeric": true
+                    }
+                },
+                "bandColor": {
+                    "displayName": "Band Color",
+                    "displayNameKey": "bandColor",
+                    "type": {
+                        "fill": {
+                            "solid": {
+                                "color": true
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "BandTwoSettings": {
+            "displayName": "Band Two",
+            "displayNameKey": "bandTwo",
+            "properties": {
+                "showBand": {
+                    "displayName": "Show Band",
+                    "displayNameKey": "showBand",
+                    "type": {
+                        "bool": true
+                    }
+                },
+                "bandStart": {
+                    "displayName": "Start Point",
+                    "displayNameKey": "bandStart",
+                    "type": {
+                        "numeric": true
+                    }
+                },
+                "bandEnd": {
+                    "displayName": "End Point",
+                    "displayNameKey": "bandEnd",
+                    "type": {
+                        "numeric": true
+                    }
+                },
+                "bandColor": {
+                    "displayName": "Band Color",
+                    "displayNameKey": "bandColor",
+                    "type": {
+                        "fill": {
+                            "solid": {
+                                "color": true
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "BandThreeSettings": {
+            "displayName": "Band Three",
+            "displayNameKey": "bandThree",
+            "properties": {
+                "showBand": {
+                    "displayName": "Show Band",
+                    "displayNameKey": "showBand",
+                    "type": {
+                        "bool": true
+                    }
+                },
+                "bandStart": {
+                    "displayName": "Start Point",
+                    "displayNameKey": "bandStart",
+                    "type": {
+                        "numeric": true
+                    }
+                },
+                "bandEnd": {
+                    "displayName": "End Point",
+                    "displayNameKey": "bandEnd",
+                    "type": {
+                        "numeric": true
+                    }
+                },
+                "bandColor": {
+                    "displayName": "Band Color",
+                    "displayNameKey": "bandColor",
+                    "type": {
+                        "fill": {
+                            "solid": {
+                                "color": true
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "BandFourSettings": {
+            "displayName": "Band Four",
+            "displayNameKey": "bandFour",
+            "properties": {
+                "showBand": {
+                    "displayName": "Show Band",
+                    "displayNameKey": "showBand",
+                    "type": {
+                        "bool": true
+                    }
+                },
+                "bandStart": {
+                    "displayName": "Start Point",
+                    "displayNameKey": "bandStart",
+                    "type": {
+                        "numeric": true
+                    }
+                },
+                "bandEnd": {
+                    "displayName": "End Point",
+                    "displayNameKey": "bandEnd",
+                    "type": {
+                        "numeric": true
+                    }
+                },
+                "bandColor": {
+                    "displayName": "Band Color",
+                    "displayNameKey": "bandColor",
+                    "type": {
+                        "fill": {
+                            "solid": {
+                                "color": true
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "BandFiveSettings": {
+            "displayName": "Band Five",
+            "displayNameKey": "bandFive",
+            "properties": {
+                "showBand": {
+                    "displayName": "Show Band",
+                    "displayNameKey": "showBand",
+                    "type": {
+                        "bool": true
+                    }
+                },
+                "bandStart": {
+                    "displayName": "Start Point",
+                    "displayNameKey": "bandStart",
+                    "type": {
+                        "numeric": true
+                    }
+                },
+                "bandEnd": {
+                    "displayName": "End Point",
+                    "displayNameKey": "bandEnd",
+                    "type": {
+                        "numeric": true
+                    }
+                },
+                "bandColor": {
+                    "displayName": "Band Color",
+                    "displayNameKey": "bandColor",
+                    "type": {
+                        "fill": {
+                            "solid": {
+                                "color": true
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "tooltips": {
+        "supportedTypes": {
+            "default": true,
+            "canvas": true
+        },
+        "roles": [
+            "Tooltips"
+        ]
+    }
+}

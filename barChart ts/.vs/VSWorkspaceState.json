@@ -1,9 +1,10 @@
 {
   "ExpandedNodes": [
     "",
+    "\\.api",
     "\\assets",
-    "\\src",
-    "\\style"
+    "\\dist",
+    "\\src"
   ],
   "SelectedNode": "\\src\\visual.ts",
   "PreviewInSolutionExplorer": false

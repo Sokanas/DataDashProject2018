@@ -710,6 +710,7 @@ var powerbi;
                         this.viewModel = this.getViewModel(options);
                         var data = this.viewModel.dataPoints;
                         var maxValue = this.viewModel.maxValue;
+                        //Define width and height of the area used for the widget, and the padding created by drawing the axes
                         var width = options.viewport.width;
                         var height = options.viewport.height;
                         var xAxisPadding = this.settings.axis.x.show.value ? this.settings.axis.x.padding.value : 0;
@@ -719,12 +720,6 @@ var powerbi;
                             height: height
                         });
                         if (this.settings.outliers.removed.value) {
-                            //2 standard deviations:
-                            //Find mean
-                            //subtract mean from each value and square result
-                            //find mean of new values
-                            //sqrt that mean
-                            //multiply by 2
                             var total = 0;
                             var average = 0;
                             var deviation = 0;
@@ -776,6 +771,7 @@ var powerbi;
                                 }
                             }
                             diff = max - min;
+                            //If Dynamic Scaling is potentially useful (Here defined as all difference between bars being in top 1/3 of graph), apply scale change
                             if (diff < (min / 2)) {
                                 domainmin = min - (diff / 2);
                                 yScale = d3.scale.linear()
@@ -879,6 +875,7 @@ var powerbi;
                         bars.exit()
                             .remove();
                     };
+                    //Update settings to match user-given values
                     Visual.prototype.updateSettings = function (options) {
                         this.settings.axis.x.show.value = DataViewObjects.getValue(options.dataViews[0].metadata.objects, {
                             objectName: "Axes",
